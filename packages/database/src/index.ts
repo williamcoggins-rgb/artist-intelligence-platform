@@ -5,6 +5,7 @@ export type {
   StreamingData,
   SocialData,
   ContentGeneration,
+  Artist,
 } from "@prisma/client";
 
 import { PrismaClient } from "@prisma/client";
