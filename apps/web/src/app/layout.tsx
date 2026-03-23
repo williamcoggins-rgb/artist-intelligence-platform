@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { GeofenceTracker } from "@/components/GeofenceTracker";
 
 export const metadata: Metadata = {
   title: "Artist Intelligence Platform",
@@ -17,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className="font-sans">
+        <GeofenceTracker />
+        {children}
+      </body>
     </html>
   );
 }

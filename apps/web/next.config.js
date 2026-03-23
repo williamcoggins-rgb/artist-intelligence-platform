@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@artist/ui", "@artist/seo-engine"],
+  transpilePackages: ["@artist/ui", "@artist/fan-map"],
 };
 
 module.exports = nextConfig;
