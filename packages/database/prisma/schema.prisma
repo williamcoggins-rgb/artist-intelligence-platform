@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Song {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  releaseDate     DateTime?
+  spotifyId       String?
+  youtubeId       String?
+  seoDescription  String?   @db.Text
+  featuredArtists String[]
+  genre           String?
+  coverUrl        String?
+  duration        Int?
+  isPublished     Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  streamingData StreamingData[]
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([genre])
+}
+
+model Fan {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  phone      String?
+  city       String?
+  lat        Float?
+  lng        Float?
+  capturedAt DateTime @default(now())
+  source     String?
+
+  @@index([email])
+  @@index([city])
+}
+
+model StreamingData {
+  id        String   @id @default(cuid())
+  songId    String
+  platform  String
+  city      String?
+  country   String?
+  streams   Int      @default(0)
+  listeners Int      @default(0)
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  song Song @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@index([songId])
+  @@index([platform])
+  @@index([date])
+  @@index([city, country])
+}
+
+model SocialData {
+  id         String   @id @default(cuid())
+  platform   String
+  city       String?
+  followers  Int      @default(0)
+  engagement Float    @default(0)
+  date       DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([platform])
+  @@index([city])
+  @@index([date])
+}
+
+model ContentGeneration {
+  id          String   @id @default(cuid())
+  entityType  String
+  entityId    String
+  contentType String
+  content     String   @db.Text
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+}
