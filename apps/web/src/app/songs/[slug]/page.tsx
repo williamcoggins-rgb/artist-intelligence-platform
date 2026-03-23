@@ -2,6 +2,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@artist/database";
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  generateSongDescription,
+  buildSongMetadata,
+  buildSongJsonLd,
+} from "@artist/seo-engine";
 
 interface SongPageProps {
   params: { slug: string };
@@ -30,15 +35,17 @@ export async function generateMetadata({
     song.seoDescription ??
     `Listen to ${song.title} — stream now on Spotify, Apple Music, and all major platforms.`;
 
-  return {
-    title: `${song.title} — Artist Intelligence Platform`,
+  return buildSongMetadata({
+    title: song.title,
+    slug: song.slug,
     description,
-    openGraph: {
-      title: song.title,
-      description,
-      type: "music.song",
-    },
-  };
+    genre: song.genre,
+    featuredArtists: song.featuredArtists,
+    releaseDate: song.releaseDate,
+    duration: song.duration,
+    coverUrl: song.coverUrl,
+    spotifyId: song.spotifyId,
+  });
 }
 
 export default async function SongPage({ params }: SongPageProps) {
@@ -48,6 +55,41 @@ export default async function SongPage({ params }: SongPageProps) {
     notFound();
   }
 
+  // Generate or retrieve cached SEO description
+  let seoDescription = song.seoDescription;
+  if (!seoDescription && process.env.ANTHROPIC_API_KEY) {
+    try {
+      seoDescription = await generateSongDescription({
+        id: song.id,
+        title: song.title,
+        genre: song.genre,
+        featuredArtists: song.featuredArtists,
+        releaseDate: song.releaseDate,
+        seoDescription: song.seoDescription,
+      });
+    } catch {
+      // Fallback if Claude API is unavailable
+    }
+  }
+
+  const description =
+    seoDescription ??
+    `Listen to ${song.title} — stream now on Spotify, Apple Music, and all major platforms.`;
+
+  // Build JSON-LD structured data
+  const jsonLd = buildSongJsonLd({
+    title: song.title,
+    slug: song.slug,
+    description,
+    genre: song.genre,
+    featuredArtists: song.featuredArtists,
+    releaseDate: song.releaseDate,
+    duration: song.duration,
+    coverUrl: song.coverUrl,
+    spotifyId: song.spotifyId,
+    youtubeId: song.youtubeId,
+  });
+
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -56,6 +98,12 @@ export default async function SongPage({ params }: SongPageProps) {
 
   return (
     <main className="min-h-screen p-8">
+      {/* JSON-LD Structured Data for Google Rich Results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <div className="max-w-3xl mx-auto">
         <Link
           href="/songs"
@@ -107,18 +155,12 @@ export default async function SongPage({ params }: SongPageProps) {
             </div>
           )}
 
-          {/* AI-Generated Description */}
+          {/* AI-Generated SEO Description */}
           <div className="p-6 bg-gray-900 rounded-xl border border-gray-800">
             <h2 className="text-lg font-semibold mb-3">About This Track</h2>
-            <p className="text-gray-300 leading-relaxed">
-              {song.seoDescription ??
-                "AI-generated description coming soon. This section will be populated via the Claude API to create unique, SEO-optimized content for each track."}
-            </p>
-            {!song.seoDescription && (
-              <p className="text-xs text-gray-600 mt-3">
-                Placeholder — Claude API integration in Session 1
-              </p>
-            )}
+            <div className="text-gray-300 leading-relaxed whitespace-pre-line">
+              {description}
+            </div>
           </div>
 
           {/* YouTube Embed */}

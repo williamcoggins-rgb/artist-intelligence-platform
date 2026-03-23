@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@artist/database";
 import type { Metadata } from "next";
+import {
+  generateCityPageContent,
+  buildCityMetadata,
+} from "@artist/seo-engine";
+
+const ARTIST_NAME = "Artist Name";
 
 interface CityPageProps {
   params: { city: string };
@@ -18,14 +24,10 @@ export async function generateMetadata({
 }: CityPageProps): Promise<Metadata> {
   const cityName = formatCityName(params.city);
 
-  return {
-    title: `Best Rapper in ${cityName} — Artist Intelligence Platform`,
-    description: `Discover the hottest hip-hop artist making waves in ${cityName}. Stream the latest tracks, find upcoming shows near ${cityName}, and join the movement.`,
-    openGraph: {
-      title: `Best Rapper in ${cityName}`,
-      description: `The sound of ${cityName}. Stream now on all platforms.`,
-    },
-  };
+  return buildCityMetadata({
+    cityName,
+    citySlug: params.city,
+  });
 }
 
 async function getLatestSongs() {
@@ -44,6 +46,35 @@ export default async function CityPage({ params }: CityPageProps) {
   const cityName = formatCityName(params.city);
   const songs = await getLatestSongs();
 
+  // Generate AI city content (or retrieve from cache)
+  let cityContent: {
+    heroText: string;
+    sceneDescription: string;
+    listenerData?: { streams: number; listeners: number } | null;
+  } | null = null;
+
+  if (process.env.ANTHROPIC_API_KEY) {
+    try {
+      cityContent = await generateCityPageContent(
+        ARTIST_NAME,
+        cityName,
+        "hip-hop"
+      );
+    } catch {
+      // Fallback to static content
+    }
+  }
+
+  const heroText =
+    cityContent?.heroText ??
+    `The hottest artist making waves in ${cityName} and beyond. Raw lyricism meets innovative production — stream the latest tracks now.`;
+
+  const sceneDescription =
+    cityContent?.sceneDescription ??
+    `${cityName} has always been a breeding ground for raw talent and authentic hip-hop. From the local venues to the streaming platforms, the city's sound is making its mark on the national stage.`;
+
+  const listenerData = cityContent?.listenerData;
+
   return (
     <main className="min-h-screen">
       {/* Hero */}
@@ -54,10 +85,7 @@ export default async function CityPage({ params }: CityPageProps) {
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
           Best Rapper in {cityName}
         </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mb-8">
-          The hottest artist making waves in {cityName} and beyond.
-          Raw lyricism meets innovative production — stream the latest tracks now.
-        </p>
+        <p className="text-xl text-gray-400 max-w-2xl mb-8">{heroText}</p>
         <div className="flex gap-4">
           <Link
             href="/songs"
@@ -73,6 +101,30 @@ export default async function CityPage({ params }: CityPageProps) {
           </Link>
         </div>
       </section>
+
+      {/* Spotify Listener Stats (if available) */}
+      {listenerData && (
+        <section className="max-w-4xl mx-auto px-8 py-8">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="p-6 bg-gray-900 rounded-xl border border-gray-800 text-center">
+              <p className="text-3xl font-bold text-brand-400">
+                {listenerData.listeners.toLocaleString()}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                Monthly Listeners in {cityName}
+              </p>
+            </div>
+            <div className="p-6 bg-gray-900 rounded-xl border border-gray-800 text-center">
+              <p className="text-3xl font-bold text-brand-400">
+                {listenerData.streams.toLocaleString()}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                Total Streams from {cityName}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Tracks */}
       <section className="max-w-4xl mx-auto px-8 py-16">
@@ -113,24 +165,19 @@ export default async function CityPage({ params }: CityPageProps) {
         </div>
       </section>
 
-      {/* City SEO Content */}
+      {/* City SEO Content — AI-Generated */}
       <section className="max-w-4xl mx-auto px-8 py-16">
         <h2 className="text-2xl font-bold mb-4">
           Hip-Hop Scene in {cityName}
         </h2>
-        <div className="text-gray-300 space-y-4 leading-relaxed">
-          <p>
-            {cityName} has always been a breeding ground for raw talent and
-            authentic hip-hop. From the local venues to the streaming
-            platforms, the city&apos;s sound is making its mark on the
-            national stage.
-          </p>
-          <p>
-            Stay connected with the {cityName} hip-hop scene. Subscribe
-            for exclusive content, early access to new releases, and
-            updates on upcoming shows in the {cityName} area.
-          </p>
+        <div className="text-gray-300 space-y-4 leading-relaxed whitespace-pre-line">
+          {sceneDescription}
         </div>
+        <p className="text-gray-300 mt-4 leading-relaxed">
+          Stay connected with the {cityName} hip-hop scene. Subscribe for
+          exclusive content, early access to new releases, and updates on
+          upcoming shows in the {cityName} area.
+        </p>
       </section>
 
       {/* CTA */}
