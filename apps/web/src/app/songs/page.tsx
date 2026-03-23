@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { prisma } from "@artist/database";
 
-async function getAllSongs() {
+type SongRecord = {
+  id: string;
+  title: string;
+  slug: string;
+  featuredArtists: string[];
+  genre: string | null;
+  releaseDate: Date | null;
+  duration: number | null;
+};
+
+async function getAllSongs(): Promise<SongRecord[]> {
   try {
     return await prisma.song.findMany({
       where: { isPublished: true },

@@ -18,3 +18,12 @@ body {
     rgb(var(--background-start-rgb));
   min-height: 100vh;
 }
+
+/* Leaflet popup overrides for dark theme */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.leaflet-container {
+  background: #030712;
+}

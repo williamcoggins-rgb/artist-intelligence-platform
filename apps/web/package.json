@@ -14,7 +14,11 @@
     "react-dom": "^18.3.0",
     "@artist/ui": "*",
     "@artist/database": "*",
-    "@artist/fan-map": "*"
+    "@artist/fan-map": "*",
+    "@types/leaflet": "^1.9.21",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0",
+    "recharts": "^3.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

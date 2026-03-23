@@ -4,12 +4,12 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*",
-    "services/*"
+    "packages/*"
   ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "start": "npm run --workspace=@artist/web start",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "db:push": "turbo run db:push --filter=@artist/database",

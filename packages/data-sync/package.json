@@ -10,10 +10,7 @@
     "lint": "echo 'no lint configured'"
   },
   "dependencies": {
-    "@artist/database": "*",
-    "@artist/spotify": "*",
-    "@artist/youtube": "*",
-    "@artist/instagram": "*"
+    "@artist/database": "*"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

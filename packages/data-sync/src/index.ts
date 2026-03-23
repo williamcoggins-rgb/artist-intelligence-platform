@@ -1,14 +1,14 @@
 /**
  * Data Sync Package
  *
- * Orchestrates syncing across Spotify, YouTube, and Instagram.
+ * Orchestrates syncing across all platforms.
  * Provides a unified intelligence summary for the dashboard.
+ *
+ * Platform API integrations are now handled via apps/web/src/lib/services/*.
+ * This package provides database aggregation and intelligence queries.
  */
 
 import { prisma, type Artist } from "@artist/database";
-import { SpotifyClient, type SpotifyConfig } from "@artist/spotify";
-import { YouTubeClient, type YouTubeConfig } from "@artist/youtube";
-import { InstagramClient, type InstagramConfig } from "@artist/instagram";
 
 export interface SyncResult {
   platform: string;
@@ -57,87 +57,6 @@ export interface ArtistIntelligenceSummary {
   lastSyncedAt: Date | null;
 }
 
-interface PlatformConfigs {
-  spotify?: SpotifyConfig;
-  youtube?: YouTubeConfig;
-  instagram?: InstagramConfig;
-}
-
-/**
- * Sync all platforms in parallel. Each platform syncs independently —
- * if one fails, the others still complete.
- */
-export async function syncAllPlatforms(
-  artistId: string,
-  configs?: PlatformConfigs
-): Promise<SyncResult[]> {
-  const artist = await prisma.artist.findUnique({ where: { id: artistId } });
-  if (!artist) {
-    throw new Error(`Artist not found: ${artistId}`);
-  }
-
-  const resolvedConfigs = configs || getConfigsFromEnv(artist);
-  const syncTasks: Promise<SyncResult>[] = [];
-
-  // Spotify sync
-  if (resolvedConfigs.spotify) {
-    syncTasks.push(syncPlatform("spotify", async () => {
-      const client = new SpotifyClient(resolvedConfigs.spotify!);
-      return client.saveStreamingDataToDB(artist.spotifyArtistId || undefined);
-    }));
-  }
-
-  // YouTube sync
-  if (resolvedConfigs.youtube) {
-    syncTasks.push(syncPlatform("youtube", async () => {
-      const client = new YouTubeClient(resolvedConfigs.youtube!);
-      return client.saveYouTubeDataToDB(artist.youtubeChannelId || undefined);
-    }));
-  }
-
-  // Instagram sync
-  if (resolvedConfigs.instagram) {
-    syncTasks.push(syncPlatform("instagram", async () => {
-      const client = new InstagramClient(resolvedConfigs.instagram!);
-      return client.saveInstagramDataToDB();
-    }));
-  }
-
-  const results = await Promise.all(syncTasks);
-
-  console.log(
-    `[DataSync] Completed sync for artist ${artistId}: ${results.filter((r) => r.success).length}/${results.length} platforms succeeded`
-  );
-
-  return results;
-}
-
-async function syncPlatform(
-  platform: string,
-  syncFn: () => Promise<number>
-): Promise<SyncResult> {
-  const start = Date.now();
-  try {
-    const recordsSaved = await syncFn();
-    return {
-      platform,
-      recordsSaved,
-      success: true,
-      durationMs: Date.now() - start,
-    };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error(`[DataSync] ${platform} sync failed:`, message);
-    return {
-      platform,
-      recordsSaved: 0,
-      success: false,
-      error: message,
-      durationMs: Date.now() - start,
-    };
-  }
-}
-
 /**
  * Aggregate all platform data into one intelligence summary.
  * This is the primary function the dashboard calls for its main view.
@@ -152,13 +71,12 @@ export async function getArtistIntelligenceSummary(
 
   const [topCities, streamingTrend, socialEngagement, topContent] =
     await Promise.all([
-      getTopCities(artistId),
-      getStreamingTrend(artistId),
+      getTopCities(),
+      getStreamingTrend(),
       getSocialEngagement(),
-      getTopContent(artistId),
+      getTopContent(),
     ]);
 
-  // Get last sync timestamp
   const lastRecord = await prisma.streamingData.findFirst({
     where: {
       song: { isPublished: true },
@@ -178,8 +96,7 @@ export async function getArtistIntelligenceSummary(
   };
 }
 
-async function getTopCities(artistId: string): Promise<TopCity[]> {
-  // Get all streaming data grouped by city/country
+async function getTopCities(): Promise<TopCity[]> {
   const streamingByCityRaw = await prisma.streamingData.groupBy({
     by: ["city", "country", "platform"],
     _sum: { streams: true, listeners: true },
@@ -191,16 +108,6 @@ async function getTopCities(artistId: string): Promise<TopCity[]> {
     take: 50,
   });
 
-  // Get social data grouped by city
-  const socialByCity = await prisma.socialData.groupBy({
-    by: ["city"],
-    _sum: { followers: true },
-    where: { city: { not: null } },
-    orderBy: { _sum: { followers: "desc" } },
-    take: 50,
-  });
-
-  // Merge streaming and social data by city
   const cityMap = new Map<string, TopCity>();
 
   for (const row of streamingByCityRaw) {
@@ -231,8 +138,7 @@ async function getTopCities(artistId: string): Promise<TopCity[]> {
     .slice(0, 20);
 }
 
-async function getStreamingTrend(artistId: string): Promise<StreamingTrend[]> {
-  // Get last 30 days of streaming data
+async function getStreamingTrend(): Promise<StreamingTrend[]> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -246,7 +152,6 @@ async function getStreamingTrend(artistId: string): Promise<StreamingTrend[]> {
     orderBy: { date: "asc" },
   });
 
-  // Group by date
   const dateMap = new Map<string, StreamingTrend>();
 
   for (const row of data) {
@@ -300,7 +205,7 @@ async function getSocialEngagement(): Promise<SocialEngagement[]> {
   return results;
 }
 
-async function getTopContent(artistId: string): Promise<TopContent[]> {
+async function getTopContent(): Promise<TopContent[]> {
   const topSongs = await prisma.streamingData.findMany({
     where: {
       song: { isPublished: true },
@@ -317,35 +222,4 @@ async function getTopContent(artistId: string): Promise<TopContent[]> {
     streams: record.streams,
     date: record.date,
   }));
-}
-
-/**
- * Build platform configs from environment variables.
- */
-function getConfigsFromEnv(artist: Artist): PlatformConfigs {
-  const configs: PlatformConfigs = {};
-
-  if (process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
-    configs.spotify = {
-      clientId: process.env.SPOTIFY_CLIENT_ID,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-      artistId: artist.spotifyArtistId || "",
-    };
-  }
-
-  if (process.env.YOUTUBE_API_KEY) {
-    configs.youtube = {
-      apiKey: process.env.YOUTUBE_API_KEY,
-      channelId: artist.youtubeChannelId || "",
-    };
-  }
-
-  if (process.env.INSTAGRAM_ACCESS_TOKEN) {
-    configs.instagram = {
-      accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
-      instagramBusinessAccountId: artist.instagramHandle || undefined,
-    };
-  }
-
-  return configs;
 }
