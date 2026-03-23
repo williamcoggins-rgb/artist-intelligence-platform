@@ -5,6 +5,8 @@ export type {
   StreamingData,
   SocialData,
   ContentGeneration,
+  GeofenceEvent,
+  FanGeofenceEvent,
 } from "@prisma/client";
 
 import { PrismaClient } from "@prisma/client";
