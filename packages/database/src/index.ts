@@ -6,6 +6,8 @@ export type {
   SocialData,
   ContentGeneration,
   Artist,
+  GeofenceEvent,
+  FanGeofenceEvent,
 } from "@prisma/client";
 
 import { PrismaClient } from "@prisma/client";

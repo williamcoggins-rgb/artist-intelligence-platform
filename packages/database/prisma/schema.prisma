@@ -35,13 +35,47 @@ model Fan {
   email      String   @unique
   phone      String?
   city       String?
+  country    String?
   lat        Float?
   lng        Float?
   capturedAt DateTime @default(now())
   source     String?
 
+  geofenceEvents FanGeofenceEvent[]
+
   @@index([email])
   @@index([city])
+  @@index([lat, lng])
+}
+
+model GeofenceEvent {
+  id        String   @id @default(cuid())
+  name      String
+  lat       Float
+  lng       Float
+  radiusKm  Float
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fans FanGeofenceEvent[]
+
+  @@index([active])
+  @@index([lat, lng])
+}
+
+model FanGeofenceEvent {
+  id             String   @id @default(cuid())
+  fanId          String
+  geofenceEventId String
+  enteredAt      DateTime @default(now())
+
+  fan            Fan            @relation(fields: [fanId], references: [id], onDelete: Cascade)
+  geofenceEvent  GeofenceEvent  @relation(fields: [geofenceEventId], references: [id], onDelete: Cascade)
+
+  @@unique([fanId, geofenceEventId])
+  @@index([fanId])
+  @@index([geofenceEventId])
 }
 
 model StreamingData {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@artist/database";
+import { reverseGeocode } from "@artist/fan-map";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, phone, city, source } = body;
+    const { email, phone, city, country, lat, lng, source } = body;
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
@@ -29,17 +30,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Reverse-geocode if we have coords but no city
+    let resolvedCity = city || null;
+    let resolvedCountry = country || null;
+
+    if (lat != null && lng != null && !resolvedCity) {
+      const geo = await reverseGeocode(
+        parseFloat(String(lat)),
+        parseFloat(String(lng))
+      );
+      resolvedCity = geo.city;
+      resolvedCountry = resolvedCountry || geo.country;
+    }
+
+    const parsedLat = lat != null ? parseFloat(String(lat)) : null;
+    const parsedLng = lng != null ? parseFloat(String(lng)) : null;
+
     const fan = await prisma.fan.upsert({
       where: { email: email.toLowerCase().trim() },
       update: {
         phone: phone || undefined,
-        city: city || undefined,
+        city: resolvedCity || undefined,
+        country: resolvedCountry || undefined,
+        lat: parsedLat ?? undefined,
+        lng: parsedLng ?? undefined,
         source: source || undefined,
       },
       create: {
         email: email.toLowerCase().trim(),
         phone: phone || null,
-        city: city || null,
+        city: resolvedCity,
+        country: resolvedCountry,
+        lat: parsedLat,
+        lng: parsedLng,
         source: source || "website",
       },
     });
