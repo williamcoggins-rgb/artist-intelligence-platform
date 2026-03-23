@@ -17,7 +17,7 @@
   "devDependencies": {
     "typescript": "^5.4.0",
     "@types/node": "^20.0.0",
-    "next": "14.2.4",
+    "next": "^14.2.35",
     "@types/react": "^18.3.0"
   }
 }
