@@ -13,7 +13,7 @@
     "@artist/ui": "*",
     "@types/leaflet": "^1.9.21",
     "leaflet": "^1.9.4",
-    "next": "14.2.4",
+    "next": "^14.2.35",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-leaflet": "^5.0.0",
