@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@artist/database";
+import type { Song } from "@artist/database";
 import type { Metadata } from "next";
 import {
   generateCityPageContent,
@@ -133,7 +134,7 @@ export default async function CityPage({ params }: CityPageProps) {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {songs.length > 0 ? (
-            songs.map((song) => (
+            songs.map((song: Song) => (
               <Link
                 key={song.id}
                 href={`/songs/${song.slug}`}
