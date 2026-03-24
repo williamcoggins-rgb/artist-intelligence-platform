@@ -23,52 +23,63 @@ async function getAllSongs(): Promise<SongRecord[]> {
 }
 
 export const metadata = {
-  title: "Song Catalog — Artist Intelligence Platform",
+  title: "Music — Qué",
   description:
-    "Browse the complete music catalog. Stream every track on Spotify, Apple Music, and all major platforms.",
+    "Browse the complete Qué music catalog. Stream every track on Spotify, Apple Music, and all major platforms.",
 };
 
 export default async function SongsPage() {
   const songs = await getAllSongs();
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-5xl mx-auto">
-        <Link
-          href="/"
-          className="text-brand-400 hover:text-brand-300 transition-colors text-sm mb-8 inline-block"
-        >
-          &larr; Home
-        </Link>
+    <main className="min-h-screen bg-black pt-24">
+      <div className="max-w-7xl mx-auto px-8">
+        {/* Page header */}
+        <div className="mb-16">
+          <Link
+            href="/"
+            className="font-body text-xs tracking-[0.2em] uppercase text-white/30 hover:text-brand-400 transition-colors"
+          >
+            &larr; Home
+          </Link>
+          <h1 className="headline text-section text-white mt-8">
+            Song Catalog
+          </h1>
+          <p className="font-body text-white/40 mt-4 max-w-lg">
+            Browse the complete catalog. Every track with SEO-optimized details.
+          </p>
+        </div>
 
-        <h1 className="text-4xl font-bold mb-2 mt-4">Song Catalog</h1>
-        <p className="text-gray-400 mb-8">
-          Browse the complete catalog. Every track with SEO-optimized details.
-        </p>
-
+        {/* Song list */}
         {songs.length > 0 ? (
-          <div className="space-y-4">
+          <div className="border-t border-white/5">
             {songs.map((song, index) => (
               <Link
                 key={song.id}
                 href={`/songs/${song.slug}`}
-                className="flex items-center gap-6 p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-brand-600 transition-colors group"
+                className="group flex items-center gap-8 py-8 border-b border-white/5 hover:bg-white/[0.02] transition-colors px-4 -mx-4"
               >
-                <span className="text-gray-600 text-sm w-8 text-right">
-                  {index + 1}
+                <span className="font-body text-sm text-white/15 w-8 text-right">
+                  {String(index + 1).padStart(2, "0")}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <h2 className="font-semibold group-hover:text-brand-400 transition-colors truncate">
+                  <h2 className="headline text-sub text-white group-hover:text-brand-400 transition-colors truncate">
                     {song.title}
                   </h2>
-                  <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
+                  <div className="flex items-center gap-4 mt-2">
                     {song.featuredArtists.length > 0 && (
-                      <span>feat. {song.featuredArtists.join(", ")}</span>
+                      <span className="font-body text-sm text-white/30">
+                        feat. {song.featuredArtists.join(", ")}
+                      </span>
                     )}
-                    {song.genre && <span>{song.genre}</span>}
+                    {song.genre && (
+                      <span className="font-body text-xs tracking-[0.2em] uppercase text-white/20 border border-white/10 px-3 py-1">
+                        {song.genre}
+                      </span>
+                    )}
                   </div>
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="font-body text-sm text-white/20">
                   {song.releaseDate
                     ? new Date(song.releaseDate).toLocaleDateString("en-US", {
                         year: "numeric",
@@ -77,20 +88,35 @@ export default async function SongsPage() {
                     : "TBA"}
                 </div>
                 {song.duration && (
-                  <div className="text-sm text-gray-600 w-12 text-right">
+                  <div className="font-body text-sm text-white/15 w-12 text-right">
                     {Math.floor(song.duration / 60)}:
                     {(song.duration % 60).toString().padStart(2, "0")}
                   </div>
                 )}
+                <span className="font-body text-xs tracking-[0.3em] uppercase text-brand-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Play &rarr;
+                </span>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="p-8 text-center text-gray-500 bg-gray-900 rounded-xl border border-gray-800">
-            No songs published yet. Check back soon.
+          <div className="py-24 text-center border border-white/5">
+            <p className="headline text-sub text-white/20">
+              No Songs Published Yet
+            </p>
+            <p className="font-body text-sm text-white/15 mt-4">Check back soon.</p>
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-8 px-8 mt-24">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Since 2024</span>
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-white/30">mosartrecords@gmail.com</span>
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Mosart Records</span>
+        </div>
+      </footer>
     </main>
   );
 }

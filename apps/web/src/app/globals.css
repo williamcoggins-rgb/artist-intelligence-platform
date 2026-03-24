@@ -1,29 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+  --color-yellow: #FFE600;
+  --color-blue: #2400FF;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-gray: #F0F0F0;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--color-white);
+  background: var(--color-black);
   min-height: 100vh;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Leaflet popup overrides for dark theme */
+/* Mass Appeal headline style */
+.headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+/* Noise texture overlay */
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ribbon strip styling */
+.ribbon-strip {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 0.75rem 3rem;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  letter-spacing: 0.05em;
+}
+
+/* Crosshair decorative element */
+.crosshair {
+  width: 80px;
+  height: 80px;
+  opacity: 0.3;
+}
+
+/* Override Leaflet for dark theme */
 .leaflet-popup-content-wrapper {
-  border-radius: 8px;
+  border-radius: 0 !important;
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #FFE600 !important;
+}
+
+.leaflet-popup-tip {
+  background: #000 !important;
 }
 
 .leaflet-container {
-  background: #030712;
+  background: #0A0A0A;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFE600;
+}
+
+/* Selection styling */
+::selection {
+  background: #FFE600;
+  color: #000;
 }

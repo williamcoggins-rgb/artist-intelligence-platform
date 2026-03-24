@@ -55,7 +55,6 @@ export default async function SongPage({ params }: SongPageProps) {
     notFound();
   }
 
-  // Generate or retrieve cached SEO description
   let seoDescription = song.seoDescription;
   if (!seoDescription && process.env.ANTHROPIC_API_KEY) {
     try {
@@ -76,7 +75,6 @@ export default async function SongPage({ params }: SongPageProps) {
     seoDescription ??
     `Listen to ${song.title} — stream now on Spotify, Apple Music, and all major platforms.`;
 
-  // Build JSON-LD structured data
   const jsonLd = buildSongJsonLd({
     title: song.title,
     slug: song.slug,
@@ -97,34 +95,37 @@ export default async function SongPage({ params }: SongPageProps) {
   };
 
   return (
-    <main className="min-h-screen p-8">
-      {/* JSON-LD Structured Data for Google Rich Results */}
+    <main className="min-h-screen bg-black pt-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto px-8">
         <Link
           href="/songs"
-          className="text-brand-400 hover:text-brand-300 transition-colors text-sm mb-8 inline-block"
+          className="font-body text-xs tracking-[0.2em] uppercase text-white/30 hover:text-brand-400 transition-colors"
         >
           &larr; Back to Catalog
         </Link>
 
-        <div className="mt-4 space-y-8">
+        <div className="mt-12 space-y-12">
           {/* Song Header */}
           <div>
-            <h1 className="text-5xl font-bold mb-2">{song.title}</h1>
-            <div className="flex items-center gap-4 text-gray-400">
-              <span>Qué</span>
+            <h1 className="headline text-section text-white">{song.title}</h1>
+            <div className="flex items-center gap-4 mt-4">
+              <span className="font-body text-sm tracking-[0.15em] uppercase text-brand-400">
+                Qué
+              </span>
               {song.featuredArtists.length > 0 && (
-                <span>feat. {song.featuredArtists.join(", ")}</span>
+                <span className="font-body text-sm text-white/40">
+                  feat. {song.featuredArtists.join(", ")}
+                </span>
               )}
             </div>
-            <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+            <div className="flex items-center gap-6 mt-4">
               {song.releaseDate && (
-                <span>
+                <span className="font-body text-sm text-white/30">
                   {new Date(song.releaseDate).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -132,9 +133,13 @@ export default async function SongPage({ params }: SongPageProps) {
                   })}
                 </span>
               )}
-              {song.duration && <span>{formatDuration(song.duration)}</span>}
+              {song.duration && (
+                <span className="font-body text-sm text-white/30">
+                  {formatDuration(song.duration)}
+                </span>
+              )}
               {song.genre && (
-                <span className="px-2 py-0.5 bg-gray-800 rounded text-gray-400">
+                <span className="font-body text-xs tracking-[0.2em] uppercase text-white/20 border border-white/10 px-3 py-1">
                   {song.genre}
                 </span>
               )}
@@ -143,29 +148,28 @@ export default async function SongPage({ params }: SongPageProps) {
 
           {/* Spotify Embed */}
           {song.spotifyId && (
-            <div className="rounded-xl overflow-hidden">
+            <div className="overflow-hidden border border-white/5">
               <iframe
                 src={`https://open.spotify.com/embed/track/${song.spotifyId}?theme=0`}
                 width="100%"
                 height="152"
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                 loading="lazy"
-                className="rounded-xl"
               />
             </div>
           )}
 
           {/* AI-Generated SEO Description */}
-          <div className="p-6 bg-gray-900 rounded-xl border border-gray-800">
-            <h2 className="text-lg font-semibold mb-3">About This Track</h2>
-            <div className="text-gray-300 leading-relaxed whitespace-pre-line">
+          <div className="p-8 bg-surface-dark border border-white/5">
+            <h2 className="headline text-xl text-white mb-4">About This Track</h2>
+            <div className="font-body text-white/60 leading-relaxed whitespace-pre-line">
               {description}
             </div>
           </div>
 
           {/* YouTube Embed */}
           {song.youtubeId && (
-            <div className="aspect-video rounded-xl overflow-hidden">
+            <div className="aspect-video overflow-hidden border border-white/5">
               <iframe
                 src={`https://www.youtube.com/embed/${song.youtubeId}`}
                 width="100%"
@@ -173,21 +177,20 @@ export default async function SongPage({ params }: SongPageProps) {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 loading="lazy"
-                className="rounded-xl"
               />
             </div>
           )}
 
           {/* Streaming Links */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Stream Now</h2>
+            <h2 className="headline text-xl text-white mb-6">Stream Now</h2>
             <div className="flex flex-wrap gap-3">
               {song.spotifyId && (
                 <a
                   href={`https://open.spotify.com/track/${song.spotifyId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-[#1DB954] text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium"
+                  className="font-body text-xs tracking-[0.2em] uppercase px-6 py-3 bg-[#1DB954] text-white hover:opacity-90 transition-opacity font-semibold"
                 >
                   Spotify
                 </a>
@@ -197,13 +200,13 @@ export default async function SongPage({ params }: SongPageProps) {
                   href={`https://www.youtube.com/watch?v=${song.youtubeId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-[#FF0000] text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium"
+                  className="font-body text-xs tracking-[0.2em] uppercase px-6 py-3 bg-[#FF0000] text-white hover:opacity-90 transition-opacity font-semibold"
                 >
                   YouTube
                 </a>
               )}
               {!song.spotifyId && !song.youtubeId && (
-                <p className="text-gray-500 text-sm">
+                <p className="font-body text-sm text-white/30">
                   Streaming links will be added once platform IDs are configured.
                 </p>
               )}
@@ -211,6 +214,15 @@ export default async function SongPage({ params }: SongPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-8 px-8 mt-24">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Since 2024</span>
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-white/30">mosartrecords@gmail.com</span>
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Mosart Records</span>
+        </div>
+      </footer>
     </main>
   );
 }

@@ -12,7 +12,6 @@ export function FanCaptureForm() {
     e.preventDefault();
     setStatus("loading");
 
-    // Try to get location alongside the form submission
     let lat: number | null = null;
     let lng: number | null = null;
 
@@ -65,29 +64,29 @@ export function FanCaptureForm() {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email address"
-        className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+        placeholder="EMAIL ADDRESS"
+        className="w-full px-6 py-4 bg-transparent border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.15em] uppercase transition-colors"
         required
       />
       <input
         type="tel"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
-        placeholder="Phone number (optional)"
-        className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+        placeholder="PHONE (OPTIONAL)"
+        className="w-full px-6 py-4 bg-transparent border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.15em] uppercase transition-colors"
       />
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full px-4 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium disabled:opacity-50"
+        className="w-full px-8 py-4 bg-brand-400 text-black font-body text-sm tracking-[0.2em] uppercase font-bold hover:bg-white transition-colors disabled:opacity-50"
       >
         {status === "loading" ? "Joining..." : "Put My City on the Map"}
       </button>
       {status === "success" && (
-        <p className="text-green-400 text-sm text-center">{message}</p>
+        <p className="font-body text-sm text-brand-400 text-center tracking-wider uppercase">{message}</p>
       )}
       {status === "error" && (
-        <p className="text-red-400 text-sm text-center">{message}</p>
+        <p className="font-body text-sm text-red-400 text-center">{message}</p>
       )}
     </form>
   );

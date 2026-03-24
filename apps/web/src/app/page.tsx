@@ -23,137 +23,259 @@ async function getLatestSongs(): Promise<Song[]> {
   }
 }
 
+const PLATFORMS = [
+  { name: "SPOTIFY", color: "#1DB954", href: "https://open.spotify.com/artist/6y1PZ9uBlScntbV2LsJ2xR" },
+  { name: "YOUTUBE", color: "#FF0000", href: "https://youtube.com/@MosartRecords" },
+  { name: "APPLE MUSIC", color: "#FC3C44", href: "#" },
+  { name: "SOUNDCLOUD", color: "#FF5500", href: "https://soundcloud.com/mosart-records" },
+  { name: "TIDAL", color: "#00FFFF", href: "#" },
+  { name: "AMAZON MUSIC", color: "#25D1DA", href: "#" },
+];
+
+const PRESS_RIBBONS = [
+  { text: "CHILDREN IN THE TUNNELS", color: "bg-brand-400 text-black", rotate: "-rotate-1" },
+  { text: "RAW LYRICISM × INNOVATIVE PRODUCTION", color: "bg-accent text-white", rotate: "rotate-[1.5deg]" },
+  { text: "MACABRE ON THE THRONE", color: "bg-white text-black", rotate: "-rotate-[0.5deg]" },
+  { text: "MOSART RECORDS × UNITEDMASTERS", color: "bg-brand-400 text-black", rotate: "rotate-[2deg]" },
+  { text: "THE SOUND OF THE UNDERGROUND", color: "bg-accent text-white", rotate: "-rotate-[1.5deg]" },
+];
+
 export default async function Home() {
   const songs = await getLatestSongs();
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center min-h-[70vh] p-8 text-center">
-        <h1 className="text-7xl font-bold tracking-tight mb-4">
+    <main className="min-h-screen bg-black overflow-hidden">
+      {/* ═══════════════════════ HERO ═══════════════════════ */}
+      <section className="relative flex flex-col items-center justify-center min-h-screen px-8 text-center">
+        {/* SINCE badge */}
+        <div className="absolute top-24 left-8 border border-white/20 px-4 py-2">
+          <span className="font-body text-xs tracking-[0.3em] uppercase text-white/50">
+            Since 2024
+          </span>
+        </div>
+
+        {/* Hero text */}
+        <h1 className="headline text-hero text-brand-400 animate-fade-in">
           Qué
         </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mb-8">
-          Mosart Records artist distributed by UnitedMasters. New music,
-          exclusive content, and live experiences.
+        <p className="font-body text-sm md:text-base tracking-[0.3em] uppercase text-white/70 mt-6 mb-12 max-w-xl">
+          Mosart Records artist distributed by UnitedMasters
         </p>
-        <div className="flex gap-4">
+
+        {/* CTAs */}
+        <div className="flex gap-6">
           <Link
             href="/songs"
-            className="px-6 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+            className="font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
           >
             Explore Music
           </Link>
           <Link
             href="#subscribe"
-            className="px-6 py-3 border border-gray-600 text-white rounded-lg hover:border-brand-500 transition-colors font-medium"
+            className="font-body text-sm tracking-[0.2em] uppercase px-8 py-4 border border-white/40 text-white hover:border-brand-400 hover:text-brand-400 transition-colors"
           >
             Join the Community
           </Link>
         </div>
-      </section>
 
-      {/* Bio Section */}
-      <section className="max-w-4xl mx-auto px-8 py-16">
-        <h2 className="text-3xl font-bold mb-6">About</h2>
-        <div className="text-gray-300 space-y-4 text-lg leading-relaxed">
-          <p>
-            A rising force in hip-hop, blending raw lyricism with innovative
-            production. Released under Mosart Records and distributed through
-            UnitedMasters, the sound draws from the streets, the studio, and
-            everything in between.
-          </p>
-          <p>
-            From late-night sessions to sold-out venues, every track tells a
-            story. The mission: make music that moves people and build a
-            community that lasts.
-          </p>
+        {/* Crosshair SVG — bottom right */}
+        <svg className="crosshair absolute bottom-12 right-12" viewBox="0 0 80 80" fill="none" stroke="white" strokeWidth="1">
+          <circle cx="40" cy="40" r="30" />
+          <circle cx="40" cy="40" r="15" />
+          <line x1="40" y1="0" x2="40" y2="80" />
+          <line x1="0" y1="40" x2="80" y2="40" />
+        </svg>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Scroll</span>
+          <div className="w-px h-8 bg-white/20" />
         </div>
       </section>
 
-      {/* Latest Releases */}
-      <section className="max-w-6xl mx-auto px-8 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold">Latest Releases</h2>
+      {/* ═══════════════════════ ABOUT ═══════════════════════ */}
+      <section className="bg-surface-gray text-black py-24 px-8">
+        {/* Category tabs */}
+        <div className="flex justify-center gap-8 mb-16">
+          {["MUSIC", "STREAMING", "SOCIAL", "LIVE"].map((tab) => (
+            <span
+              key={tab}
+              className="font-body text-xs tracking-[0.3em] uppercase text-accent font-semibold cursor-default"
+            >
+              {tab}
+            </span>
+          ))}
+        </div>
+
+        {/* Mission statement */}
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="headline text-section text-black leading-[0.95]">
+            A Rising Force in Hip-Hop, Blending Raw Lyricism with Innovative Production
+          </h2>
+          <p className="font-body text-lg text-black/60 mt-8 max-w-2xl mx-auto leading-relaxed">
+            Released under Mosart Records and distributed through UnitedMasters,
+            the sound draws from the streets, the studio, and everything in between.
+            From late-night sessions to sold-out venues, every track tells a story.
+          </p>
           <Link
             href="/songs"
-            className="text-brand-400 hover:text-brand-300 transition-colors"
+            className="inline-block mt-10 font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
+          >
+            Learn More
+          </Link>
+        </div>
+      </section>
+
+      {/* ═══════════════════════ PRESS RIBBONS ═══════════════════════ */}
+      <section className="relative py-20 noise-bg overflow-hidden">
+        <div className="relative z-10 space-y-4">
+          {PRESS_RIBBONS.map((ribbon, i) => (
+            <div
+              key={i}
+              className={`ribbon-strip ${ribbon.color} ${ribbon.rotate} w-[110%] -ml-[5%]`}
+            >
+              {ribbon.text} &nbsp;&mdash;&nbsp; {ribbon.text} &nbsp;&mdash;&nbsp; {ribbon.text} &nbsp;&mdash;&nbsp; {ribbon.text}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════ LATEST RELEASES ═══════════════════════ */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-8 mb-16 flex items-end justify-between">
+          <h2 className="headline text-section text-white">
+            Latest Releases
+          </h2>
+          <Link
+            href="/songs"
+            className="font-body text-sm tracking-[0.2em] uppercase text-brand-400 hover:text-white transition-colors"
           >
             View All &rarr;
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {songs.length > 0 ? (
-            songs.map((song) => (
+
+        {songs.length > 0 ? (
+          <div className="space-y-2">
+            {songs.map((song, index) => (
               <Link
                 key={song.id}
                 href={`/songs/${song.slug}`}
-                className="group p-6 bg-gray-900 rounded-xl border border-gray-800 hover:border-brand-600 transition-colors"
+                className="group block relative w-full py-12 px-8 md:px-16 bg-surface-dark hover:bg-white/[0.03] transition-colors border-b border-white/5"
               >
-                <div className="aspect-square bg-gray-800 rounded-lg mb-4 flex items-center justify-center">
-                  <svg
-                    className="w-12 h-12 text-gray-600 group-hover:text-brand-500 transition-colors"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-lg mb-1">{song.title}</h3>
-                {song.featuredArtists.length > 0 && (
-                  <p className="text-sm text-gray-500 mb-1">
-                    feat. {song.featuredArtists.join(", ")}
-                  </p>
-                )}
-                <p className="text-sm text-gray-500">
-                  {song.releaseDate
-                    ? new Date(song.releaseDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : "Coming Soon"}
-                </p>
-                {song.genre && (
-                  <span className="inline-block mt-2 px-2 py-0.5 text-xs bg-gray-800 text-gray-400 rounded">
-                    {song.genre}
+                <div className="max-w-7xl mx-auto flex items-center gap-8">
+                  <span className="font-body text-sm text-white/20 w-8">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
-                )}
+                  <div className="flex-1">
+                    <h3 className="headline text-sub text-white group-hover:text-brand-400 transition-colors">
+                      {song.title}
+                    </h3>
+                    <div className="flex items-center gap-4 mt-2">
+                      {song.featuredArtists.length > 0 && (
+                        <span className="font-body text-sm text-white/40">
+                          feat. {song.featuredArtists.join(", ")}
+                        </span>
+                      )}
+                      {song.genre && (
+                        <span className="font-body text-xs tracking-[0.2em] uppercase text-white/30 border border-white/10 px-3 py-1">
+                          {song.genre}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span className="font-body text-sm text-white/30">
+                    {song.releaseDate
+                      ? new Date(song.releaseDate).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                        })
+                      : "TBA"}
+                  </span>
+                  <span className="font-body text-xs tracking-[0.3em] uppercase text-brand-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Listen Now
+                  </span>
+                </div>
               </Link>
-            ))
-          ) : (
-            <div className="col-span-full p-8 text-center text-gray-500 bg-gray-900 rounded-xl border border-gray-800">
-              New music coming soon. Subscribe below to be the first to know.
+            ))}
+          </div>
+        ) : (
+          <div className="max-w-7xl mx-auto px-8">
+            <div className="py-16 text-center border border-white/10">
+              <p className="headline text-sub text-white/30">
+                New Music Coming Soon
+              </p>
+              <p className="font-body text-sm text-white/20 mt-4">
+                Subscribe below to be the first to know.
+              </p>
             </div>
-          )}
+          </div>
+        )}
+      </section>
+
+      {/* ═══════════════════════ STREAMING PLATFORMS ═══════════════════════ */}
+      <section className="bg-surface-dark py-24 px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="headline text-section text-white text-center mb-16">
+            Stream Everywhere
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {PLATFORMS.map((platform) => (
+              <a
+                key={platform.name}
+                href={platform.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative p-8 bg-black border border-white/5 hover:border-white/20 transition-all duration-300 overflow-hidden"
+              >
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+                  style={{ backgroundColor: platform.color }}
+                />
+                <div className="relative z-10">
+                  <div
+                    className="w-3 h-3 rounded-full mb-6 opacity-60 group-hover:opacity-100 transition-opacity"
+                    style={{ backgroundColor: platform.color }}
+                  />
+                  <p className="headline text-xl text-white/80 group-hover:text-white transition-colors">
+                    {platform.name}
+                  </p>
+                  <p className="font-body text-xs tracking-[0.2em] uppercase text-white/0 group-hover:text-white/40 transition-colors mt-3">
+                    Listen Now &rarr;
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Fan Capture / Subscribe Section */}
-      <section id="subscribe" className="max-w-xl mx-auto px-8 py-16">
-        <div className="p-8 bg-gray-900 rounded-2xl border border-gray-800 text-center">
-          <h2 className="text-3xl font-bold mb-3">Get Exclusive Content</h2>
-          <p className="text-gray-400 mb-6">
+      {/* ═══════════════════════ FAN CAPTURE ═══════════════════════ */}
+      <section id="subscribe" className="relative py-32 px-8 noise-bg">
+        <div className="relative z-10 max-w-2xl mx-auto text-center">
+          <h2 className="headline text-section text-brand-400 mb-4">
+            Get Exclusive Content
+          </h2>
+          <p className="font-body text-white/50 mb-12 text-lg">
             Early access to new music, behind-the-scenes content, and
             exclusive drops. Join the inner circle.
           </p>
-          <form action="/api/fan-capture" method="POST" className="space-y-4">
+          <form action="/api/fan-capture" method="POST" className="space-y-4 max-w-md mx-auto">
             <input
               type="email"
               name="email"
-              placeholder="Email address"
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+              placeholder="EMAIL ADDRESS"
+              className="w-full px-6 py-4 bg-transparent border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.15em] uppercase transition-colors"
               required
             />
             <input
               type="tel"
               name="phone"
-              placeholder="Phone number (optional)"
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+              placeholder="PHONE (OPTIONAL)"
+              className="w-full px-6 py-4 bg-transparent border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.15em] uppercase transition-colors"
             />
             <button
               type="submit"
-              className="w-full px-4 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+              className="w-full px-6 py-4 bg-brand-400 text-black font-body text-sm tracking-[0.2em] uppercase font-semibold hover:bg-white transition-colors"
             >
               Subscribe
             </button>
@@ -161,9 +283,19 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-800 py-8 text-center text-gray-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} Artist Intelligence Platform. All rights reserved.</p>
+      {/* ═══════════════════════ FOOTER ═══════════════════════ */}
+      <footer className="border-t border-white/5 py-8 px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">
+            Since 2024
+          </span>
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-white/30">
+            mosartrecords@gmail.com
+          </span>
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">
+            Mosart Records
+          </span>
+        </div>
       </footer>
     </main>
   );

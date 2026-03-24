@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { GeofenceTracker } from "@/components/GeofenceTracker";
+import { StickyNav } from "@/components/StickyNav";
 
 export const metadata: Metadata = {
   title: "Qué — Official Site",
@@ -14,9 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="font-sans">
+    <html lang="en" className="scroll-smooth">
+      <body className="font-body bg-black text-white">
         <GeofenceTracker />
+        <StickyNav />
         {children}
       </body>
     </html>

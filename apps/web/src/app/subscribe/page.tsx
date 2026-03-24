@@ -1,29 +1,29 @@
 export default function SubscribePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <div className="max-w-md w-full space-y-6">
-        <h1 className="text-3xl font-bold text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center px-8 bg-black relative noise-bg">
+      <div className="relative z-10 max-w-md w-full text-center">
+        <h1 className="headline text-section text-brand-400 mb-4">
           Get Exclusive Content
         </h1>
-        <p className="text-gray-400 text-center">
+        <p className="font-body text-sm tracking-[0.15em] uppercase text-white/40 mb-12">
           Join the community for early access to new music, behind-the-scenes
           content, and exclusive drops.
         </p>
         <form className="space-y-4">
           <input
             type="email"
-            placeholder="Email address"
-            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+            placeholder="EMAIL ADDRESS"
+            className="w-full px-6 py-4 bg-transparent border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.15em] uppercase transition-colors"
             required
           />
           <input
             type="tel"
-            placeholder="Phone number (optional)"
-            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-500"
+            placeholder="PHONE (OPTIONAL)"
+            className="w-full px-6 py-4 bg-transparent border border-white/20 text-white placeholder-white/30 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.15em] uppercase transition-colors"
           />
           <button
             type="submit"
-            className="w-full px-4 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+            className="w-full px-8 py-4 bg-accent text-white font-body text-sm tracking-[0.2em] uppercase font-bold hover:bg-accent-light transition-colors"
           >
             Subscribe
           </button>

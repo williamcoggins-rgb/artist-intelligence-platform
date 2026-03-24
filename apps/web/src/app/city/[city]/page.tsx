@@ -47,7 +47,6 @@ export default async function CityPage({ params }: CityPageProps) {
   const cityName = formatCityName(params.city);
   const songs = await getLatestSongs();
 
-  // Generate AI city content (or retrieve from cache)
   let cityContent: {
     heroText: string;
     sceneDescription: string;
@@ -77,49 +76,51 @@ export default async function CityPage({ params }: CityPageProps) {
   const listenerData = cityContent?.listenerData;
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-black pt-24">
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
-        <p className="text-brand-400 font-medium mb-4 uppercase tracking-wider text-sm">
+      <section className="flex flex-col items-center justify-center min-h-[60vh] px-8 text-center">
+        <span className="font-body text-xs tracking-[0.3em] uppercase text-brand-400 mb-6">
           Representing {cityName}
-        </p>
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">
+        </span>
+        <h1 className="headline text-section text-white">
           Best Rapper in {cityName}
         </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mb-8">{heroText}</p>
+        <p className="font-body text-white/40 max-w-2xl mt-6 mb-10 leading-relaxed">
+          {heroText}
+        </p>
         <div className="flex gap-4">
           <Link
             href="/songs"
-            className="px-6 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+            className="font-body text-xs tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors font-bold"
           >
             Listen Now
           </Link>
           <Link
             href="/#subscribe"
-            className="px-6 py-3 border border-gray-600 text-white rounded-lg hover:border-brand-500 transition-colors font-medium"
+            className="font-body text-xs tracking-[0.2em] uppercase px-8 py-4 border border-white/30 text-white hover:border-brand-400 hover:text-brand-400 transition-colors font-bold"
           >
             Get Exclusive Access
           </Link>
         </div>
       </section>
 
-      {/* Spotify Listener Stats (if available) */}
+      {/* Listener Stats */}
       {listenerData && (
-        <section className="max-w-4xl mx-auto px-8 py-8">
-          <div className="grid grid-cols-2 gap-6">
-            <div className="p-6 bg-gray-900 rounded-xl border border-gray-800 text-center">
-              <p className="text-3xl font-bold text-brand-400">
+        <section className="max-w-4xl mx-auto px-8 py-12">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-8 bg-surface-dark border border-white/5 text-center">
+              <p className="headline text-3xl text-brand-400">
                 {listenerData.listeners.toLocaleString()}
               </p>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="font-body text-xs tracking-[0.15em] uppercase text-white/40 mt-2">
                 Monthly Listeners in {cityName}
               </p>
             </div>
-            <div className="p-6 bg-gray-900 rounded-xl border border-gray-800 text-center">
-              <p className="text-3xl font-bold text-brand-400">
+            <div className="p-8 bg-surface-dark border border-white/5 text-center">
+              <p className="headline text-3xl text-brand-400">
                 {listenerData.streams.toLocaleString()}
               </p>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="font-body text-xs tracking-[0.15em] uppercase text-white/40 mt-2">
                 Total Streams from {cityName}
               </p>
             </div>
@@ -128,27 +129,27 @@ export default async function CityPage({ params }: CityPageProps) {
       )}
 
       {/* Tracks */}
-      <section className="max-w-4xl mx-auto px-8 py-16">
-        <h2 className="text-3xl font-bold mb-6">
+      <section className="max-w-5xl mx-auto px-8 py-20">
+        <h2 className="headline text-sub text-white mb-10">
           Latest Tracks from {cityName}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {songs.length > 0 ? (
             songs.map((song: Song) => (
               <Link
                 key={song.id}
                 href={`/songs/${song.slug}`}
-                className="p-6 bg-gray-900 rounded-xl border border-gray-800 hover:border-brand-600 transition-colors group"
+                className="group p-8 bg-surface-dark border border-white/5 hover:border-brand-400/30 transition-colors"
               >
-                <h3 className="font-semibold text-lg group-hover:text-brand-400 transition-colors">
+                <h3 className="headline text-xl text-white group-hover:text-brand-400 transition-colors">
                   {song.title}
                 </h3>
                 {song.featuredArtists.length > 0 && (
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="font-body text-sm text-white/30 mt-2">
                     feat. {song.featuredArtists.join(", ")}
                   </p>
                 )}
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="font-body text-sm text-white/20 mt-3">
                   {song.releaseDate
                     ? new Date(song.releaseDate).toLocaleDateString("en-US", {
                         year: "numeric",
@@ -159,45 +160,58 @@ export default async function CityPage({ params }: CityPageProps) {
               </Link>
             ))
           ) : (
-            <div className="col-span-full p-6 text-center text-gray-500 bg-gray-900 rounded-xl border border-gray-800">
-              New music dropping soon for {cityName}.
+            <div className="col-span-full py-12 text-center border border-white/5">
+              <p className="font-body text-white/30">
+                New music dropping soon for {cityName}.
+              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* City SEO Content — AI-Generated */}
-      <section className="max-w-4xl mx-auto px-8 py-16">
-        <h2 className="text-2xl font-bold mb-4">
-          Hip-Hop Scene in {cityName}
-        </h2>
-        <div className="text-gray-300 space-y-4 leading-relaxed whitespace-pre-line">
-          {sceneDescription}
+      {/* City SEO Content */}
+      <section className="bg-surface-gray text-black py-20 px-8">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="headline text-sub text-black mb-6">
+            Hip-Hop Scene in {cityName}
+          </h2>
+          <div className="font-body text-black/60 space-y-4 leading-relaxed whitespace-pre-line">
+            {sceneDescription}
+          </div>
+          <p className="font-body text-black/60 mt-6 leading-relaxed">
+            Stay connected with the {cityName} hip-hop scene. Subscribe for
+            exclusive content, early access to new releases, and updates on
+            upcoming shows in the {cityName} area.
+          </p>
         </div>
-        <p className="text-gray-300 mt-4 leading-relaxed">
-          Stay connected with the {cityName} hip-hop scene. Subscribe for
-          exclusive content, early access to new releases, and updates on
-          upcoming shows in the {cityName} area.
-        </p>
       </section>
 
       {/* CTA */}
-      <section className="max-w-xl mx-auto px-8 py-16 text-center">
-        <div className="p-8 bg-gray-900 rounded-2xl border border-gray-800">
-          <h2 className="text-2xl font-bold mb-3">
+      <section className="relative py-20 px-8 noise-bg">
+        <div className="relative z-10 max-w-xl mx-auto text-center">
+          <h2 className="headline text-sub text-brand-400 mb-4">
             {cityName} — Join the Movement
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="font-body text-sm text-white/40 mb-8">
             Be the first to know about shows in {cityName} and new releases.
           </p>
           <Link
             href="/#subscribe"
-            className="inline-block px-6 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+            className="inline-block font-body text-xs tracking-[0.2em] uppercase px-8 py-4 bg-brand-400 text-black font-bold hover:bg-white transition-colors"
           >
             Subscribe Now
           </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 py-8 px-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Since 2024</span>
+          <span className="font-body text-[10px] tracking-[0.2em] uppercase text-white/30">mosartrecords@gmail.com</span>
+          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Mosart Records</span>
+        </div>
+      </footer>
     </main>
   );
 }
