@@ -37,8 +37,8 @@ export function GeofenceTracker() {
             }),
           });
           sessionStorage.setItem(sessionKey, Date.now().toString());
-        } catch {
-          // Silent fail — don't disrupt the user experience
+        } catch (error) {
+          console.warn("[GeofenceTracker] Location capture failed:", error);
         }
       },
       () => {

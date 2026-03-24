@@ -38,7 +38,14 @@ async function getLatestSongs() {
       orderBy: { releaseDate: "desc" },
       take: 4,
     });
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: "/city",
+      message: "City page songs query failed",
+      error: error instanceof Error ? error.message : String(error),
+    }));
     return [];
   }
 }
@@ -60,8 +67,14 @@ export default async function CityPage({ params }: CityPageProps) {
         cityName,
         "hip-hop"
       );
-    } catch {
-      // Fallback to static content
+    } catch (error) {
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        level: "error",
+        route: `/city/${params.city}`,
+        message: "City content generation failed",
+        error: error instanceof Error ? error.message : String(error),
+      }));
     }
   }
 

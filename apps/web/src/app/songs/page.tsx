@@ -17,7 +17,14 @@ async function getAllSongs(): Promise<SongRecord[]> {
       where: { isPublished: true },
       orderBy: { releaseDate: "desc" },
     });
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: "/songs",
+      message: "Songs listing query failed",
+      error: error instanceof Error ? error.message : String(error),
+    }));
     return [];
   }
 }

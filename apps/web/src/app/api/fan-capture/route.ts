@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@artist/database";
 import { reverseGeocode } from "@artist/fan-map";
+import { apiLog, errorMeta } from "@/lib/logger";
+
+const ROUTE = "/api/fan-capture";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => null);
 
     if (!body) {
+      apiLog("warn", ROUTE, "Invalid request body", { ip: request.headers.get("x-forwarded-for") });
       return NextResponse.json(
         { error: "Invalid request body" },
         { status: 400 }
@@ -16,6 +20,7 @@ export async function POST(request: NextRequest) {
     const { email, phone, city, country, lat, lng, source } = body;
 
     if (!email || typeof email !== "string") {
+      apiLog("warn", ROUTE, "Missing or invalid email", { email });
       return NextResponse.json(
         { error: "Email is required" },
         { status: 400 }
@@ -24,6 +29,7 @@ export async function POST(request: NextRequest) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      apiLog("warn", ROUTE, "Invalid email format", { email });
       return NextResponse.json(
         { error: "Invalid email format" },
         { status: 400 }
@@ -43,6 +49,11 @@ export async function POST(request: NextRequest) {
       resolvedCountry = resolvedCountry || geo.country;
     }
 
+    // Ensure city and source always have values
+    const finalCity = resolvedCity || "unknown";
+    const finalCountry = resolvedCountry || "unknown";
+    const finalSource = source || "website";
+
     const parsedLat = lat != null ? parseFloat(String(lat)) : null;
     const parsedLng = lng != null ? parseFloat(String(lng)) : null;
 
@@ -50,21 +61,27 @@ export async function POST(request: NextRequest) {
       where: { email: email.toLowerCase().trim() },
       update: {
         phone: phone || undefined,
-        city: resolvedCity || undefined,
-        country: resolvedCountry || undefined,
+        city: finalCity,
+        country: finalCountry,
         lat: parsedLat ?? undefined,
         lng: parsedLng ?? undefined,
-        source: source || undefined,
+        source: finalSource,
       },
       create: {
         email: email.toLowerCase().trim(),
         phone: phone || null,
-        city: resolvedCity,
-        country: resolvedCountry,
+        city: finalCity,
+        country: finalCountry,
         lat: parsedLat,
         lng: parsedLng,
-        source: source || "website",
+        source: finalSource,
       },
+    });
+
+    apiLog("info", ROUTE, "Fan captured", {
+      fanId: fan.id,
+      city: finalCity,
+      source: finalSource,
     });
 
     return NextResponse.json(
@@ -72,7 +89,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Fan capture error:", error);
+    apiLog("error", ROUTE, "Fan capture failed", errorMeta(error));
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

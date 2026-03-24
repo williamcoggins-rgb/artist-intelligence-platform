@@ -18,7 +18,14 @@ async function getLatestSongs(): Promise<Song[]> {
       orderBy: { releaseDate: "desc" },
       take: 6,
     });
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: "/",
+      message: "Latest songs query failed",
+      error: error instanceof Error ? error.message : String(error),
+    }));
     return [];
   }
 }
