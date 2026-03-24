@@ -87,16 +87,16 @@ export function BackgroundVideo({
       ref={containerRef}
       className={`relative w-full h-screen overflow-hidden ${className}`}
     >
-      {/* ── Thumbnail fallback (always present, shows before iframe loads) ── */}
+      {/* ── Thumbnail fallback (always present, shows immediately) ── */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center"
+        className="absolute inset-0 z-0 bg-cover bg-center bg-black"
         style={{ backgroundImage: `url(${thumbnailUrl})` }}
       />
 
-      {/* ── Video layer (lazy loaded) ── */}
+      {/* ── Video layer (lazy loaded, sits above thumbnail) ── */}
       {isInView && (
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-[-10%] w-[120%] h-[120%]">
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute inset-[-20%] w-[140%] h-[140%]">
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${videoId}?${embedParams.toString()}`}
               title="Background video"
@@ -106,6 +106,7 @@ export function BackgroundVideo({
               className={`w-full h-full border-0 pointer-events-none transition-opacity duration-[1500ms] ${
                 iframeLoaded ? "opacity-100" : "opacity-0"
               }`}
+              style={!iframeLoaded ? { visibility: "hidden" } : undefined}
             />
           </div>
         </div>
