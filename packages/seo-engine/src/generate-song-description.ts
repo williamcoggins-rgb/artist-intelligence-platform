@@ -11,7 +11,7 @@ export interface SongInput {
   seoDescription?: string | null;
 }
 
-const ARTIST_NAME = "Artist Name";
+const ARTIST_NAME = "Qué";
 
 export async function generateSongDescription(song: SongInput): Promise<string> {
   // Return cached description if it exists

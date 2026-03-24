@@ -7,7 +7,7 @@ export interface CityContentResult {
   listenerData?: { streams: number; listeners: number } | null;
 }
 
-const ARTIST_NAME = "Artist Name";
+const ARTIST_NAME = "Qué";
 
 export async function generateCityPageContent(
   artistName: string,

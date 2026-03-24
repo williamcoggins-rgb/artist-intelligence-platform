@@ -52,7 +52,7 @@ function getConfig(): SpotifyConfig {
   return {
     clientId: process.env.SPOTIFY_CLIENT_ID || "",
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
-    artistId: process.env.SPOTIFY_ARTIST_ID || "",
+    artistId: process.env.SPOTIFY_ARTIST_ID || "6y1PZ9uBlScntbV2LsJ2xR",
   };
 }
 

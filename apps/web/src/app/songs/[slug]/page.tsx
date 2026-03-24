@@ -117,7 +117,7 @@ export default async function SongPage({ params }: SongPageProps) {
           <div>
             <h1 className="text-5xl font-bold mb-2">{song.title}</h1>
             <div className="flex items-center gap-4 text-gray-400">
-              <span>Artist Name</span>
+              <span>Qué</span>
               {song.featuredArtists.length > 0 && (
                 <span>feat. {song.featuredArtists.join(", ")}</span>
               )}

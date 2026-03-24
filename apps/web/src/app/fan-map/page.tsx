@@ -25,7 +25,7 @@ export default async function FanMapPage() {
       {/* Header */}
       <nav className="flex items-center justify-between px-8 py-4 border-b border-gray-800">
         <Link href="/" className="text-xl font-bold">
-          Artist Name
+          Qué
         </Link>
         <div className="flex gap-6 text-sm text-gray-400">
           <Link href="/songs" className="hover:text-white transition-colors">

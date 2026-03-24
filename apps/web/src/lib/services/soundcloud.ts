@@ -59,7 +59,7 @@ function getOAuthToken(): string {
 }
 
 function getArtistId(): string {
-  return process.env.SOUNDCLOUD_ARTIST_ID || "";
+  return process.env.SOUNDCLOUD_ARTIST_ID || "mosart-records";
 }
 
 async function apiRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {

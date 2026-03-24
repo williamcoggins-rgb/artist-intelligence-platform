@@ -7,7 +7,7 @@ import {
   buildCityMetadata,
 } from "@artist/seo-engine";
 
-const ARTIST_NAME = "Artist Name";
+const ARTIST_NAME = "Qué";
 
 interface CityPageProps {
   params: { city: string };

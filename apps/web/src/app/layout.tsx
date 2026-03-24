@@ -3,9 +3,9 @@ import "./globals.css";
 import { GeofenceTracker } from "@/components/GeofenceTracker";
 
 export const metadata: Metadata = {
-  title: "Artist Intelligence Platform",
+  title: "Qué — Official Site",
   description:
-    "Official website — music, tour dates, and exclusive content",
+    "Official website for Qué — music, tour dates, and exclusive content. Mosart Records / UnitedMasters.",
 };
 
 export default function RootLayout({

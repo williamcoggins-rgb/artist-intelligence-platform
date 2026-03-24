@@ -58,7 +58,7 @@ function getDeveloperToken(): string {
 }
 
 function getArtistId(): string {
-  return process.env.APPLE_MUSIC_ARTIST_ID || "";
+  return process.env.APPLE_MUSIC_ARTIST_ID || "50223ee4c5aea036e9243";
 }
 
 async function apiRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {

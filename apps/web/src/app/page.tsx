@@ -31,11 +31,11 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="flex flex-col items-center justify-center min-h-[70vh] p-8 text-center">
         <h1 className="text-7xl font-bold tracking-tight mb-4">
-          Artist Name
+          Qué
         </h1>
         <p className="text-xl text-gray-400 max-w-2xl mb-8">
-          Roc Nation distributed artist pushing boundaries in hip-hop.
-          New music, exclusive content, and live experiences.
+          Mosart Records artist distributed by UnitedMasters. New music,
+          exclusive content, and live experiences.
         </p>
         <div className="flex gap-4">
           <Link
@@ -59,8 +59,9 @@ export default async function Home() {
         <div className="text-gray-300 space-y-4 text-lg leading-relaxed">
           <p>
             A rising force in hip-hop, blending raw lyricism with innovative
-            production. Distributed through Roc Nation, the sound draws from
-            the streets, the studio, and everything in between.
+            production. Released under Mosart Records and distributed through
+            UnitedMasters, the sound draws from the streets, the studio, and
+            everything in between.
           </p>
           <p>
             From late-night sessions to sold-out venues, every track tells a

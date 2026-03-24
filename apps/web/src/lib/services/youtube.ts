@@ -44,6 +44,10 @@ function getApiKey(): string {
   return process.env.YOUTUBE_API_KEY || "";
 }
 
+function getChannelHandle(): string {
+  return process.env.YOUTUBE_CHANNEL_HANDLE || "@MosartRecords";
+}
+
 function getChannelId(): string {
   return process.env.YOUTUBE_CHANNEL_ID || "";
 }

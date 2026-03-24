@@ -1,5 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://example.com";
-const ARTIST_NAME = "Artist Name";
+const ARTIST_NAME = "Qué";
 
 export interface SongJsonLdInput {
   title: string;
