@@ -20,24 +20,25 @@ const BRAND_ELEMENTS: BrandElement[] = [
   { text: "BANG BY MYSELF", className: "headline text-3xl md:text-5xl text-white", rotate: "1deg", delay: 0.3, opacity: 0.3 },
   { text: "SHINE", className: "headline text-5xl md:text-7xl text-brand-400", rotate: "-1deg", delay: 2.0, opacity: 0.45 },
 
-  // Label & identity — BIG
+  // MOSART RECORDS — multiple sizes and positions
   { text: "MOSART RECORDS", className: "headline text-4xl md:text-6xl text-white", rotate: "2deg", delay: 0.6, opacity: 0.5 },
-  { text: "KING OF THE QC", className: "headline text-3xl md:text-5xl text-white", rotate: "-3deg", delay: 1.8, opacity: 0.4 },
+  { text: "MOSART RECORDS", className: "headline text-2xl md:text-3xl text-brand-400", rotate: "-3deg", delay: 1.8, opacity: 0.35 },
+  { text: "MOSART RECORDS", className: "headline text-xl md:text-2xl text-white", rotate: "1deg", delay: 2.5, opacity: 0.2 },
   { text: "CHARLOTTE NC", className: "headline text-2xl md:text-4xl text-white", rotate: "4deg", delay: 1.0, opacity: 0.3 },
 
-  // QUÉ variations — different sizes
+  // QUÉ variations
   { text: "QUÉ", className: "headline text-7xl md:text-9xl text-white", rotate: "5deg", delay: 0.2, opacity: 0.25 },
   { text: "QUÉ", className: "headline text-4xl md:text-6xl text-brand-400", rotate: "-4deg", delay: 0.9, opacity: 0.4 },
   { text: "QUÉ", className: "headline text-5xl md:text-7xl text-white", rotate: "2deg", delay: 1.6, opacity: 0.2 },
   { text: "QUÉ", className: "headline text-3xl md:text-5xl text-white", rotate: "-2deg", delay: 2.4, opacity: 0.15 },
 
-  // Symbols — LARGE (4-6rem)
+  // Symbols — LARGE
   { text: "♛", className: "text-6xl md:text-[6rem] text-white", rotate: "-5deg", delay: 0.4, opacity: 0.4 },
   { text: "⚡", className: "text-5xl md:text-[5rem] text-brand-400", rotate: "3deg", delay: 1.3, opacity: 0.5 },
   { text: "♛", className: "text-4xl md:text-[4rem] text-brand-400", rotate: "4deg", delay: 2.2, opacity: 0.3 },
   { text: "⚡", className: "text-6xl md:text-[6rem] text-white", rotate: "-2deg", delay: 0.7, opacity: 0.35 },
 
-  // Fill — more song titles at varied sizes
+  // Fill
   { text: "SACRIFICE", className: "headline text-3xl md:text-5xl text-brand-400", rotate: "3deg", delay: 2.6, opacity: 0.25 },
   { text: "MOSART", className: "headline text-4xl md:text-6xl text-white", rotate: "-3deg", delay: 1.1, opacity: 0.2 },
   { text: "MR", className: "headline text-5xl md:text-7xl text-white", rotate: "5deg", delay: 0.15, opacity: 0.15 },
@@ -46,14 +47,58 @@ const BRAND_ELEMENTS: BrandElement[] = [
   { text: "SHINE", className: "headline text-3xl md:text-5xl text-white", rotate: "-4deg", delay: 0.45, opacity: 0.25 },
 ];
 
-// Zigzag clip-path for torn edge effect
-// Left half: full left side + jagged right edge
-const CLIP_LEFT =
-  "polygon(0% 0%, 48% 0%, 52% 5%, 47% 10%, 53% 15%, 46% 20%, 52% 25%, 48% 30%, 54% 35%, 47% 40%, 53% 45%, 48% 50%, 54% 55%, 47% 60%, 53% 65%, 48% 70%, 52% 75%, 47% 80%, 53% 85%, 48% 90%, 52% 95%, 48% 100%, 0% 100%)";
+/**
+ * Seeded PRNG (mulberry32) — deterministic so both halves always match.
+ * Returns a function that produces values in [0, 1).
+ */
+function seededRandom(seed: number) {
+  let t = seed + 0x6d2b79f5;
+  return () => {
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
-// Right half: jagged left edge + full right side
-const CLIP_RIGHT =
-  "polygon(48% 0%, 100% 0%, 100% 100%, 48% 100%, 52% 95%, 48% 90%, 53% 85%, 47% 80%, 52% 75%, 48% 70%, 53% 65%, 47% 60%, 54% 55%, 48% 50%, 53% 45%, 47% 40%, 54% 35%, 48% 30%, 52% 25%, 46% 20%, 53% 15%, 47% 10%, 52% 5%)";
+/**
+ * Generate ~50 irregular tear points along a vertical center line.
+ * X jitters between 47% and 53% (irregular, organic feel).
+ * Y spacing varies slightly (not perfectly even).
+ */
+function generateTearPoints(): { x: number; y: number }[] {
+  const rand = seededRandom(42);
+  const points: { x: number; y: number }[] = [];
+  const numPoints = 50;
+
+  for (let i = 0; i <= numPoints; i++) {
+    const baseY = (i / numPoints) * 100;
+    // Jitter Y position slightly (±0.4%) for organic feel, but keep endpoints at 0/100
+    const yJitter = i === 0 || i === numPoints ? 0 : (rand() - 0.5) * 0.8;
+    const y = Math.max(0, Math.min(100, baseY + yJitter));
+    // X jitters between 47% and 53% — wider range = rougher tear
+    const x = 47 + rand() * 6;
+    points.push({ x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 });
+  }
+
+  return points;
+}
+
+const TEAR_POINTS = generateTearPoints();
+
+// Left half: go down the tear edge, then close along left side
+const CLIP_LEFT = (() => {
+  const edgeDown = TEAR_POINTS.map((p) => `${p.x}% ${p.y}%`).join(", ");
+  return `polygon(0% 0%, ${edgeDown}, 0% 100%)`;
+})();
+
+// Right half: go up the tear edge (reversed), then close along right side
+const CLIP_RIGHT = (() => {
+  const edgeUp = [...TEAR_POINTS]
+    .reverse()
+    .map((p) => `${p.x}% ${p.y}%`)
+    .join(", ");
+  return `polygon(100% 0%, 100% 100%, ${edgeUp})`;
+})();
 
 function BrandGrid() {
   return (
@@ -123,9 +168,7 @@ export function Preloader() {
       sessionStorage.setItem("preloader-seen", "1");
     }
 
-    // Start paper tear at 3.5s
     const tearTimer = setTimeout(() => setPhase("tearing"), 3500);
-    // Unmount after tear completes (0.8s animation)
     const doneTimer = setTimeout(() => setPhase("done"), 4400);
 
     return () => {
@@ -140,7 +183,7 @@ export function Preloader() {
     <div className="fixed inset-0 z-50">
       {/* LEFT HALF — tears to the left */}
       <div
-        className="absolute inset-0 bg-black preloader-tear-half"
+        className="absolute inset-0 bg-black preloader-tear-left"
         style={{
           clipPath: CLIP_LEFT,
           transform: phase === "tearing" ? "translateX(-110%)" : "translateX(0)",
@@ -153,7 +196,7 @@ export function Preloader() {
 
       {/* RIGHT HALF — tears to the right */}
       <div
-        className="absolute inset-0 bg-black preloader-tear-half"
+        className="absolute inset-0 bg-black preloader-tear-right"
         style={{
           clipPath: CLIP_RIGHT,
           transform: phase === "tearing" ? "translateX(110%)" : "translateX(0)",

@@ -134,3 +134,49 @@ body {
   0%, 100% { opacity: 0.2; transform: scale(0.8); }
   50% { opacity: 1; transform: scale(1.2); }
 }
+
+/* Paper fiber effect — thin white rough line along tear edge */
+.preloader-tear-left::after,
+.preloader-tear-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 5%,
+    rgba(255, 255, 255, 0.08) 15%,
+    rgba(255, 255, 255, 0.14) 25%,
+    rgba(255, 255, 255, 0.06) 35%,
+    rgba(255, 255, 255, 0.13) 45%,
+    rgba(255, 255, 255, 0.09) 55%,
+    rgba(255, 255, 255, 0.15) 65%,
+    rgba(255, 255, 255, 0.07) 75%,
+    rgba(255, 255, 255, 0.12) 85%,
+    rgba(255, 255, 255, 0.10) 95%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Fiber strip on the RIGHT edge of the left half */
+.preloader-tear-left::after {
+  right: 0;
+}
+
+/* Fiber strip on the LEFT edge of the right half */
+.preloader-tear-right::after {
+  left: 0;
+}
+
+/* Tear edge shadow — depth effect as if paper lifts */
+.preloader-tear-left {
+  box-shadow: 6px 0 12px -2px rgba(0, 0, 0, 0.8);
+}
+
+.preloader-tear-right {
+  box-shadow: -6px 0 12px -2px rgba(0, 0, 0, 0.8);
+}
