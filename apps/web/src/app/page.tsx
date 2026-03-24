@@ -110,18 +110,25 @@ export default async function Home() {
         {/* Mission statement */}
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="headline text-section text-black leading-[0.95]">
-            A Rising Force in Hip-Hop, Blending Raw Lyricism with Innovative Production
+            Charlotte, NC — Over a Decade in the Making
           </h2>
           <p className="font-body text-lg text-black/60 mt-8 max-w-2xl mx-auto leading-relaxed">
+            Qué has been building since 2013 — over a decade of sharpening his
+            craft out of Charlotte&apos;s underground. His sound moves between raw
+            street narratives and introspective pieces, from tracks like
+            &ldquo;SHINE&rdquo; and &ldquo;Inner G (Energy)&rdquo; to the dark
+            cinematic weight of &ldquo;MACABRE&rdquo; and &ldquo;BAGUETTED
+            DYNASTY.&rdquo; Two major projects — <em>Children In The Tunnels</em> and
+            <em> Macabre On The Throne</em> — map the evolution alongside music
+            videos, visual work, and a short film (<em>Pandora&apos;s Box</em>).
             Released under Mosart Records and distributed through UnitedMasters,
-            the sound draws from the streets, the studio, and everything in between.
-            From late-night sessions to sold-out venues, every track tells a story.
+            Qué is building something meant to last.
           </p>
           <Link
             href="/songs"
             className="inline-block mt-10 font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
           >
-            Learn More
+            Explore the Catalog
           </Link>
         </div>
       </section>
