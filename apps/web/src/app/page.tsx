@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@artist/database";
+import { BackgroundVideo } from "@/components/BackgroundVideo";
+import { VideoShowcaseCard } from "@/components/VideoShowcaseCard";
 
 type Song = {
   id: string;
@@ -47,96 +49,139 @@ const PRESS_RIBBONS = [
   { text: "THE SOUND OF THE UNDERGROUND", color: "bg-accent text-white", rotate: "-rotate-[1.5deg]" },
 ];
 
+const VIDEO_SHOWCASE = [
+  { videoId: "0buKupv4FEE", title: "BAGUETTED DYNASTY", subtitle: "Music Video" },
+  { videoId: "i7pHODzUoJI", title: "LA DANSE (INTRO)", subtitle: "Music Video" },
+  { videoId: "Q1u22GxxRWQ", title: "SHINE", subtitle: "Music Video" },
+];
+
 export default async function Home() {
   const songs = await getLatestSongs();
 
   return (
     <main className="min-h-screen bg-black overflow-hidden">
-      {/* ═══════════════════════ HERO ═══════════════════════ */}
-      <section className="relative flex flex-col items-center justify-center min-h-screen px-8 text-center">
-        {/* SINCE badge */}
-        <div className="absolute top-24 left-8 border border-white/20 px-4 py-2">
-          <span className="font-body text-xs tracking-[0.3em] uppercase text-white/50">
-            Since 2024
-          </span>
-        </div>
-
-        {/* Hero text */}
-        <h1 className="headline text-hero text-brand-400 animate-fade-in">
-          Qué
-        </h1>
-        <p className="font-body text-sm md:text-base tracking-[0.3em] uppercase text-white/70 mt-6 mb-12 max-w-xl">
-          Mosart Records artist distributed by UnitedMasters
-        </p>
-
-        {/* CTAs */}
-        <div className="flex gap-6">
-          <Link
-            href="/songs"
-            className="font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
-          >
-            Explore Music
-          </Link>
-          <Link
-            href="#subscribe"
-            className="font-body text-sm tracking-[0.2em] uppercase px-8 py-4 border border-white/40 text-white hover:border-brand-400 hover:text-brand-400 transition-colors"
-          >
-            Join the Community
-          </Link>
-        </div>
-
-        {/* Crosshair SVG — bottom right */}
-        <svg className="crosshair absolute bottom-12 right-12" viewBox="0 0 80 80" fill="none" stroke="white" strokeWidth="1">
-          <circle cx="40" cy="40" r="30" />
-          <circle cx="40" cy="40" r="15" />
-          <line x1="40" y1="0" x2="40" y2="80" />
-          <line x1="0" y1="40" x2="80" y2="40" />
-        </svg>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Scroll</span>
-          <div className="w-px h-8 bg-white/20" />
-        </div>
-      </section>
-
-      {/* ═══════════════════════ ABOUT ═══════════════════════ */}
-      <section className="bg-surface-gray text-black py-24 px-8">
-        {/* Category tabs */}
-        <div className="flex justify-center gap-8 mb-16">
-          {["MUSIC", "STREAMING", "SOCIAL", "LIVE"].map((tab) => (
-            <span
-              key={tab}
-              className="font-body text-xs tracking-[0.3em] uppercase text-accent font-semibold cursor-default"
-            >
-              {tab}
+      {/* ═══════════════════════ HERO — MACABRE BACKGROUND VIDEO ═══════════════════════ */}
+      <BackgroundVideo videoId="9ocDnBnE7-U" overlayOpacity={50}>
+        <div className="flex flex-col items-center text-center px-8">
+          {/* SINCE badge */}
+          <div className="absolute top-24 left-8 border border-white/20 px-4 py-2">
+            <span className="font-body text-xs tracking-[0.3em] uppercase text-white/50">
+              Since 2013
             </span>
-          ))}
+          </div>
+
+          {/* Hero text */}
+          <h1 className="headline text-hero text-brand-400 animate-fade-in">
+            Qué
+          </h1>
+          <p className="font-body text-sm md:text-base tracking-[0.3em] uppercase text-white/70 mt-6 mb-12 max-w-xl">
+            Mosart Records artist distributed by UnitedMasters
+          </p>
+
+          {/* CTAs */}
+          <div className="flex gap-6">
+            <Link
+              href="/songs"
+              className="font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
+            >
+              Explore Music
+            </Link>
+            <Link
+              href="#subscribe"
+              className="font-body text-sm tracking-[0.2em] uppercase px-8 py-4 border border-white/40 text-white hover:border-brand-400 hover:text-brand-400 transition-colors"
+            >
+              Join the Community
+            </Link>
+          </div>
+
+          {/* Crosshair SVG — bottom right */}
+          <svg className="crosshair absolute bottom-12 right-12" viewBox="0 0 80 80" fill="none" stroke="white" strokeWidth="1">
+            <circle cx="40" cy="40" r="30" />
+            <circle cx="40" cy="40" r="15" />
+            <line x1="40" y1="0" x2="40" y2="80" />
+            <line x1="0" y1="40" x2="80" y2="40" />
+          </svg>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">Scroll</span>
+            <div className="w-px h-8 bg-white/20" />
+          </div>
+        </div>
+      </BackgroundVideo>
+
+      {/* ═══════════════════════ ABOUT — INNER G BACKGROUND VIDEO ═══════════════════════ */}
+      <BackgroundVideo
+        videoId="wGuJTxh-Ba4"
+        overlayOpacity={70}
+        gradientOverlay={false}
+        className="!h-auto min-h-screen"
+      >
+        <div className="py-24 px-8 w-full">
+          {/* Category tabs */}
+          <div className="flex justify-center gap-8 mb-16">
+            {["MUSIC", "STREAMING", "SOCIAL", "LIVE"].map((tab) => (
+              <span
+                key={tab}
+                className="font-body text-xs tracking-[0.3em] uppercase text-brand-400 font-semibold cursor-default"
+              >
+                {tab}
+              </span>
+            ))}
+          </div>
+
+          {/* Mission statement */}
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="headline text-section text-white leading-[0.95]">
+              Charlotte, NC — Over a Decade in the Making
+            </h2>
+            <p className="font-body text-lg text-white/60 mt-8 max-w-2xl mx-auto leading-relaxed">
+              Qué has been building since 2013 — over a decade of sharpening his
+              craft out of Charlotte&apos;s underground. His sound moves between raw
+              street narratives and introspective pieces, from tracks like
+              &ldquo;SHINE&rdquo; and &ldquo;Inner G (Energy)&rdquo; to the dark
+              cinematic weight of &ldquo;MACABRE&rdquo; and &ldquo;BAGUETTED
+              DYNASTY.&rdquo; Two major projects — <em>Children In The Tunnels</em> and
+              <em> Macabre On The Throne</em> — map the evolution alongside music
+              videos, visual work, and a short film (<em>Pandora&apos;s Box</em>).
+              Released under Mosart Records and distributed through UnitedMasters,
+              Qué is building something meant to last.
+            </p>
+            <Link
+              href="/songs"
+              className="inline-block mt-10 font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
+            >
+              Explore the Catalog
+            </Link>
+          </div>
+        </div>
+      </BackgroundVideo>
+
+      {/* ═══════════════════════ VIDEO SHOWCASE ═══════════════════════ */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-8 mb-16 flex items-end justify-between">
+          <h2 className="headline text-section text-white">
+            Visual Work
+          </h2>
+          <a
+            href="https://youtube.com/@MosartRecords"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-body text-sm tracking-[0.2em] uppercase text-brand-400 hover:text-white transition-colors"
+          >
+            All Videos &rarr;
+          </a>
         </div>
 
-        {/* Mission statement */}
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="headline text-section text-black leading-[0.95]">
-            Charlotte, NC — Over a Decade in the Making
-          </h2>
-          <p className="font-body text-lg text-black/60 mt-8 max-w-2xl mx-auto leading-relaxed">
-            Qué has been building since 2013 — over a decade of sharpening his
-            craft out of Charlotte&apos;s underground. His sound moves between raw
-            street narratives and introspective pieces, from tracks like
-            &ldquo;SHINE&rdquo; and &ldquo;Inner G (Energy)&rdquo; to the dark
-            cinematic weight of &ldquo;MACABRE&rdquo; and &ldquo;BAGUETTED
-            DYNASTY.&rdquo; Two major projects — <em>Children In The Tunnels</em> and
-            <em> Macabre On The Throne</em> — map the evolution alongside music
-            videos, visual work, and a short film (<em>Pandora&apos;s Box</em>).
-            Released under Mosart Records and distributed through UnitedMasters,
-            Qué is building something meant to last.
-          </p>
-          <Link
-            href="/songs"
-            className="inline-block mt-10 font-body text-sm tracking-[0.2em] uppercase px-8 py-4 bg-accent text-white hover:bg-accent-light transition-colors"
-          >
-            Explore the Catalog
-          </Link>
+        <div className="space-y-3 px-4 md:px-8">
+          {VIDEO_SHOWCASE.map((video) => (
+            <VideoShowcaseCard
+              key={video.videoId}
+              videoId={video.videoId}
+              title={video.title}
+              subtitle={video.subtitle}
+            />
+          ))}
         </div>
       </section>
 
@@ -301,7 +346,7 @@ export default async function Home() {
       <footer className="border-t border-white/5 py-8 px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <span className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30">
-            Since 2024
+            Since 2013
           </span>
           <span className="font-body text-[10px] tracking-[0.2em] uppercase text-white/30">
             mosartrecords@gmail.com
