@@ -16,8 +16,14 @@ export default async function FanMapPage() {
   let topCities: { city: string; count: number }[] = [];
   try {
     topCities = await getTopCitiesByFans(10);
-  } catch {
-    // DB may not be available — render with empty data
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: "/fan-map",
+      message: "Fan map cities query failed",
+      error: error instanceof Error ? error.message : String(error),
+    }));
   }
 
   return (

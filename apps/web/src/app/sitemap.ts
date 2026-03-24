@@ -63,8 +63,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     }));
-  } catch {
-    // DB not available, return static pages only
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: "/sitemap.xml",
+      message: "Song query failed for sitemap",
+      error: error instanceof Error ? error.message : String(error),
+    }));
   }
 
   // City pages — combine default cities with cities where Spotify shows listeners
@@ -88,8 +94,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         citySet.add(slug);
       }
     }
-  } catch {
-    // StreamingData not available yet, use defaults only
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: "/sitemap.xml",
+      message: "Streaming city query failed for sitemap",
+      error: error instanceof Error ? error.message : String(error),
+    }));
   }
 
   const cityPages: MetadataRoute.Sitemap = Array.from(citySet).map(

@@ -34,12 +34,12 @@ model Fan {
   id         String   @id @default(cuid())
   email      String   @unique
   phone      String?
-  city       String?
-  country    String?
+  city       String   @default("unknown")
+  country    String   @default("unknown")
   lat        Float?
   lng        Float?
   capturedAt DateTime @default(now())
-  source     String?
+  source     String   @default("website")
 
   geofenceEvents FanGeofenceEvent[]
 

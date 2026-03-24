@@ -7,6 +7,7 @@ import {
   buildSongMetadata,
   buildSongJsonLd,
 } from "@artist/seo-engine";
+import { SongFanCapture } from "@/components/SongFanCapture";
 
 interface SongPageProps {
   params: { slug: string };
@@ -17,7 +18,14 @@ async function getSong(slug: string) {
     return await prisma.song.findUnique({
       where: { slug, isPublished: true },
     });
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      level: "error",
+      route: `/songs/${slug}`,
+      message: "Song query failed",
+      error: error instanceof Error ? error.message : String(error),
+    }));
     return null;
   }
 }
@@ -67,8 +75,14 @@ export default async function SongPage({ params }: SongPageProps) {
         releaseDate: song.releaseDate,
         seoDescription: song.seoDescription,
       });
-    } catch {
-      // Fallback if Claude API is unavailable
+    } catch (error) {
+      console.error(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        level: "error",
+        route: `/songs/${params.slug}`,
+        message: "SEO description generation failed",
+        error: error instanceof Error ? error.message : String(error),
+      }));
     }
   }
 
@@ -162,6 +176,9 @@ export default async function SongPage({ params }: SongPageProps) {
               {description}
             </div>
           </div>
+
+          {/* Fan Capture */}
+          <SongFanCapture songTitle={song.title} />
 
           {/* YouTube Embed */}
           {song.youtubeId && (

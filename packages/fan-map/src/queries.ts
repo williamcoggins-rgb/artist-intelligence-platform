@@ -23,12 +23,12 @@ export async function getFansByCity(): Promise<CityFanCount[]> {
   const results = await prisma.fan.groupBy({
     by: ["city"],
     _count: { id: true },
-    where: { city: { not: null } },
+    where: { city: { not: "unknown" } },
     orderBy: { _count: { id: "desc" } },
   });
 
   return results.map((r) => ({
-    city: r.city as string,
+    city: r.city,
     count: r._count.id,
   }));
 }
@@ -69,13 +69,13 @@ export async function getTopCitiesByFans(
   const results = await prisma.fan.groupBy({
     by: ["city"],
     _count: { id: true },
-    where: { city: { not: null } },
+    where: { city: { not: "unknown" } },
     orderBy: { _count: { id: "desc" } },
     take: limit,
   });
 
   return results.map((r) => ({
-    city: r.city as string,
+    city: r.city,
     count: r._count.id,
   }));
 }
