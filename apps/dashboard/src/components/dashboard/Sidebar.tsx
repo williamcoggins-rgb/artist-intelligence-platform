@@ -1,12 +1,12 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 
 const navItems = [
   {
-    href: "/dashboard",
+    href: "/",
     label: "Overview",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -15,7 +15,7 @@ const navItems = [
     ),
   },
   {
-    href: "/dashboard/streaming",
+    href: "/streaming",
     label: "Streaming",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -24,7 +24,7 @@ const navItems = [
     ),
   },
   {
-    href: "/dashboard/social",
+    href: "/social",
     label: "Social",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -33,7 +33,7 @@ const navItems = [
     ),
   },
   {
-    href: "/dashboard/fan-map",
+    href: "/fan-map",
     label: "Fan Map",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -43,7 +43,7 @@ const navItems = [
     ),
   },
   {
-    href: "/dashboard/content",
+    href: "/content",
     label: "Content",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -52,7 +52,7 @@ const navItems = [
     ),
   },
   {
-    href: "/dashboard/settings",
+    href: "/settings",
     label: "Settings",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -65,18 +65,12 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  async function handleLogout() {
-    await fetch("/api/dashboard-auth", { method: "DELETE" });
-    router.push("/dashboard/login");
-  }
 
   const sidebarContent = (
     <>
       <div className="p-6 border-b border-white/5">
-        <Link href="/dashboard" className="block">
+        <Link href="/" className="block">
           <h1 className="headline text-2xl text-brand-400">QUE</h1>
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-white/30 mt-1">
             Intelligence Hub
@@ -87,8 +81,8 @@ export default function Sidebar() {
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map((item) => {
           const isActive =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
+            item.href === "/"
+              ? pathname === "/"
               : pathname.startsWith(item.href);
           return (
             <Link
@@ -110,25 +104,10 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-white/5 space-y-2">
-        <Link
-          href="/"
-          className="flex items-center gap-2 px-3 py-2 text-sm font-body text-white/30 hover:text-brand-400 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-          </svg>
-          Back to Site
-        </Link>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm font-body text-white/30 hover:text-red-400 transition-colors text-left"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-          </svg>
-          Sign Out
-        </button>
+      <div className="p-4 border-t border-white/5">
+        <p className="font-body text-[10px] tracking-[0.2em] uppercase text-white/15 text-center">
+          Local Dashboard
+        </p>
       </div>
     </>
   );

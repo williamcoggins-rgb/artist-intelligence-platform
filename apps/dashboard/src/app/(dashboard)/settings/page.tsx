@@ -90,24 +90,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Password Management */}
-      <div className="bg-[#0A0A0A] border border-white/5 p-6 space-y-4">
-        <h2 className="headline text-lg text-white">Security</h2>
-        <div>
-          <label className="block font-body text-xs tracking-[0.15em] uppercase text-white/30 mb-2">
-            Dashboard Password
-          </label>
-          <input
-            type="password"
-            placeholder="Enter new password"
-            className="w-full px-4 py-3 bg-transparent border border-white/10 text-white placeholder-white/15 font-body text-sm focus:outline-none focus:border-brand-400 transition-colors"
-          />
-          <p className="font-body text-[10px] text-white/15 mt-2">
-            Set via DASHBOARD_PASSWORD environment variable. Changing here requires a redeploy.
-          </p>
-        </div>
-      </div>
-
       {/* Dashboard Preferences */}
       <div className="bg-[#0A0A0A] border border-white/5 p-6 space-y-4">
         <h2 className="headline text-lg text-white">Preferences</h2>

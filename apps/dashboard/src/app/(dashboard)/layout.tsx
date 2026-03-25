@@ -4,15 +4,15 @@ import Sidebar from "@/components/dashboard/Sidebar";
 import { usePathname } from "next/navigation";
 
 const pageTitles: Record<string, string> = {
-  "/dashboard": "Overview",
-  "/dashboard/streaming": "Streaming Analytics",
-  "/dashboard/social": "Social Performance",
-  "/dashboard/fan-map": "Fan Map",
-  "/dashboard/content": "Content",
-  "/dashboard/settings": "Settings",
+  "/": "Overview",
+  "/streaming": "Streaming Analytics",
+  "/social": "Social Performance",
+  "/fan-map": "Fan Map",
+  "/content": "Content",
+  "/settings": "Settings",
 };
 
-export default function DashboardOverviewLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;

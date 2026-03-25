@@ -34,12 +34,6 @@ export function StickyNav() {
         >
           Fan Map
         </Link>
-        <Link
-          href="/dashboard/login"
-          className="font-body text-xs tracking-[0.25em] uppercase text-white/60 hover:text-brand-400 transition-colors"
-        >
-          Dashboard
-        </Link>
       </div>
     </nav>
   );

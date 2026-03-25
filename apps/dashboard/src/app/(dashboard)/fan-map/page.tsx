@@ -100,14 +100,11 @@ export default function FanMapPage() {
       <div className="bg-[#0A0A0A] border border-white/5 p-6">
         <h2 className="headline text-lg text-white mb-4">Geofence Event Log</h2>
         <p className="font-body text-xs text-white/30 mb-6">
-          Location events from mobile visitors — captured via /api/fan-location and /api/geofence-event
+          Location events from mobile visitors
         </p>
         <div className="py-8 text-center border border-dashed border-white/10">
           <p className="font-body text-sm text-white/30">
             Geofence events will appear here as mobile visitors interact with the site.
-          </p>
-          <p className="font-body text-xs text-white/15 mt-2">
-            Data sourced from /api/geofence-event
           </p>
         </div>
       </div>

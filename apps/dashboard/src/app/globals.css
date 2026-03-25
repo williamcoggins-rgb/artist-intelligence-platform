@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-yellow: #FFE600;
+  --color-blue: #2400FF;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-gray: #F0F0F0;
+}
+
+body {
+  color: var(--color-white);
+  background: var(--color-black);
+  min-height: 100vh;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mass Appeal headline style */
+.headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+/* Override Leaflet for dark theme */
+.leaflet-popup-content-wrapper {
+  border-radius: 0 !important;
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #FFE600 !important;
+}
+
+.leaflet-popup-tip {
+  background: #000 !important;
+}
+
+.leaflet-container {
+  background: #0A0A0A;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFE600;
+}
+
+/* Selection styling */
+::selection {
+  background: #FFE600;
+  color: #000;
+}
