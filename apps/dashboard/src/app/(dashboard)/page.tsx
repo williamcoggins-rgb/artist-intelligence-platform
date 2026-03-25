@@ -9,10 +9,10 @@ import {
   totalYouTubeViews,
   totalSpotifyStreams,
   totalCrossplatform,
+  totalAudience,
   spotifyProfile,
   YOUTUBE_CHANNEL,
   cityFanData as fallbackCities,
-  totalFallbackFans,
   platformComparison,
   timeline,
 } from "@/lib/dashboard/artist-data";
@@ -28,7 +28,6 @@ interface FanRecord {
 export default function OverviewPage() {
   const [recentFans] = useState<FanRecord[]>([]);
 
-  const fanCount = totalFallbackFans;
   const topCity = fallbackCities[0];
 
   return (
@@ -36,9 +35,9 @@ export default function OverviewPage() {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         <MetricCard
-          label="Total Fans"
-          value={fanCount.toLocaleString()}
-          change="Across all cities"
+          label="Total Audience"
+          value={totalAudience.toLocaleString()}
+          change="Spotify + YouTube + Instagram"
           changeType="neutral"
         />
         <MetricCard
@@ -50,7 +49,7 @@ export default function OverviewPage() {
         <MetricCard
           label="Total Streams"
           value={totalSpotifyStreams.toLocaleString()}
-          change={`${spotifyProfile.monthlyListeners} monthly listeners`}
+          change={`${spotifyProfile.monthlyListeners.toLocaleString()} monthly listeners`}
           changeType="neutral"
         />
         <MetricCard

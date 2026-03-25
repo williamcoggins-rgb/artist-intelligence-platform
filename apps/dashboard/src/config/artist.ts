@@ -48,7 +48,7 @@ export const artistConfig: ArtistConfig = {
   platforms: {
     spotify: {
       artistId: "6y1PZ9uBlScntbV2LsJ2xR",
-      monthlyListeners: 6866,
+      monthlyListeners: 7_044,
     },
     youtube: {
       channelHandle: "@MosartRecords",
@@ -60,8 +60,8 @@ export const artistConfig: ArtistConfig = {
     },
     instagram: {
       handle: "mosartrecords",
-      followers: 1609,
-      posts: 503,
+      followers: 1_618,
+      posts: 505,
     },
     tidal: {
       artistId: "7715292",
