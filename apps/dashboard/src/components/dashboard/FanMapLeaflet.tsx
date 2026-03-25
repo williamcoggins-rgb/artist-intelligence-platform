@@ -1,8 +1,12 @@
 "use client";
 
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 import { CityFanData } from "@/lib/dashboard/artist-data";
+
+// Lazily require react-leaflet to avoid SSR issues — this file is
+// only ever loaded via next/dynamic with ssr:false, so window is
+// guaranteed to exist when this module executes.
+const { MapContainer, TileLayer, CircleMarker, Popup } = require("react-leaflet") as typeof import("react-leaflet");
 
 type FilterMode = "all" | "recent" | "merch";
 
@@ -43,6 +47,16 @@ function getOpacity(count: number, maxCount: number, engagement: string): number
 }
 
 export default function FanMapLeaflet({ cities, filter }: Props) {
+  // Load Leaflet CSS at runtime in the browser
+  useEffect(() => {
+    if (!document.querySelector('link[href*="leaflet"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+  }, []);
+
   const maxCount = Math.max(...cities.map((c) => getCount(c, filter)));
 
   return (
