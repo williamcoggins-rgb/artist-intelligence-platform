@@ -1,7 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { CityFanData } from "@/lib/dashboard/artist-data";
+
+const FanMapLeaflet = dynamic(() => import("./FanMapLeaflet"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-[#0A0A0A] flex items-center justify-center">
+      <p className="font-body text-sm text-white/20">Loading map...</p>
+    </div>
+  ),
+});
 
 interface FanMapProps {
   cities: CityFanData[];
@@ -10,24 +20,7 @@ interface FanMapProps {
 type FilterMode = "all" | "recent" | "merch";
 
 export default function FanMapDashboard({ cities }: FanMapProps) {
-  const [mounted, setMounted] = useState(false);
   const [filter, setFilter] = useState<FilterMode>("all");
-  const [MapComponent, setMapComponent] = useState<React.ComponentType<{ cities: CityFanData[]; filter: FilterMode }> | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    import("./FanMapLeaflet").then((mod) => {
-      setMapComponent(() => mod.default);
-    });
-  }, []);
-
-  if (!mounted) {
-    return (
-      <div className="w-full h-[calc(100vh-16rem)] bg-[#0A0A0A] border border-white/5 flex items-center justify-center">
-        <p className="font-body text-sm text-white/20">Loading map...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
@@ -53,7 +46,7 @@ export default function FanMapDashboard({ cities }: FanMapProps) {
         ))}
       </div>
       <div className="w-full h-[calc(100vh-18rem)] overflow-hidden border border-white/5">
-        {MapComponent && <MapComponent cities={cities} filter={filter} />}
+        <FanMapLeaflet cities={cities} filter={filter} />
       </div>
     </div>
   );
