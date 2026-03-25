@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@artist/database";
-import { reverseGeocode } from "@artist/fan-map";
+import { prisma } from "@/lib/prisma";
+import { reverseGeocode } from "@/lib/fan-map";
 import { apiLog, errorMeta } from "@/lib/logger";
 
 const ROUTE = "/api/fan-location";

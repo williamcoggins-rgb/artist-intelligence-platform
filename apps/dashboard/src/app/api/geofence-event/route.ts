@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { countFansInRadius } from "@artist/fan-map";
+import { countFansInRadius } from "@/lib/fan-map";
 import { apiLog, errorMeta } from "@/lib/logger";
 
 const ROUTE = "/api/geofence-event";

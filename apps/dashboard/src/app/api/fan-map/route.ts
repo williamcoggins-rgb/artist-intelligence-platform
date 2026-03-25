@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getTopCitiesByFans } from "@artist/fan-map";
+import { getTopCitiesByFans } from "@/lib/fan-map";
 import { apiLog, errorMeta } from "@/lib/logger";
 
 const ROUTE = "/api/fan-map";
