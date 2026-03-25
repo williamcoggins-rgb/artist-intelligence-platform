@@ -7,31 +7,50 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 
 interface PlatformData {
   platform: string;
-  streams: number;
-  listeners: number;
+  value: number;
+  metric: string;
+  color: string;
 }
 
 export default function PlatformComparisonChart({ data }: { data: PlatformData[] }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-        <XAxis dataKey="platform" stroke="#6b7280" fontSize={12} />
-        <YAxis stroke="#6b7280" fontSize={12} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+        <XAxis
+          dataKey="platform"
+          stroke="rgba(255,255,255,0.2)"
+          fontSize={11}
+          fontFamily="Space Grotesk"
+        />
+        <YAxis
+          stroke="rgba(255,255,255,0.2)"
+          fontSize={11}
+          fontFamily="Space Grotesk"
+          tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v)}
+        />
         <Tooltip
-          contentStyle={{ backgroundColor: "#1f2937", border: "1px solid #374151", borderRadius: 8 }}
-          labelStyle={{ color: "#9ca3af" }}
+          contentStyle={{
+            backgroundColor: "#0A0A0A",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 0,
+            fontFamily: "Space Grotesk",
+            fontSize: 12,
+          }}
+          labelStyle={{ color: "rgba(255,255,255,0.4)" }}
           formatter={(value) => [Number(value).toLocaleString(), ""]}
         />
-        <Legend wrapperStyle={{ color: "#9ca3af" }} />
-        <Bar dataKey="streams" fill="#1db954" radius={[4, 4, 0, 0]} name="Streams" />
-        <Bar dataKey="listeners" fill="#ff0000" radius={[4, 4, 0, 0]} name="Listeners" />
+        <Bar dataKey="value" radius={[2, 2, 0, 0]}>
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={entry.color} />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );

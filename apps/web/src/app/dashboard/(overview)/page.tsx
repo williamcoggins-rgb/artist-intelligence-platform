@@ -1,59 +1,79 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import MetricCard from "@/components/dashboard/MetricCard";
 import CityBarChart from "@/components/dashboard/charts/CityBarChart";
+import StreamsLineChart from "@/components/dashboard/charts/StreamsLineChart";
+import PlatformComparisonChart from "@/components/dashboard/charts/PlatformComparisonChart";
 import {
-  totalFanCount,
-  fanCountLastWeek,
-  totalStreams,
-  cityFanData,
-  recentFans,
-  songStreamData,
-} from "@/lib/dashboard/mock-data";
+  totalYouTubeViews,
+  totalSpotifyStreams,
+  totalCrossplatform,
+  spotifyProfile,
+  YOUTUBE_CHANNEL,
+  cityFanData as fallbackCities,
+  totalFallbackFans,
+  platformComparison,
+  timeline,
+} from "@/lib/dashboard/artist-data";
+
+interface FanRecord {
+  id: string;
+  email: string;
+  city: string | null;
+  source: string | null;
+  createdAt: string;
+}
 
 export default function OverviewPage() {
-  const fanGrowth = totalFanCount - fanCountLastWeek;
-  const fanGrowthPct = ((fanGrowth / fanCountLastWeek) * 100).toFixed(1);
-  const topCity = cityFanData[0];
-  const avgEngagement = "5.2%";
+  const [realFanCount, setRealFanCount] = useState<number | null>(null);
+  const [recentFans, setRecentFans] = useState<FanRecord[]>([]);
 
-  const top3Cities = cityFanData.slice(0, 3).map((c) => ({
-    city: c.city,
-    fanCount: c.fanCount,
-  }));
+  // Fetch real fan data from the database
+  useEffect(() => {
+    fetch("/api/fan-map")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.cities && data.cities.length > 0) {
+          const total = data.cities.reduce(
+            (sum: number, c: { fanCount: number }) => sum + c.fanCount,
+            0
+          );
+          setRealFanCount(total);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const fanCount = realFanCount ?? totalFallbackFans;
+  const topCity = fallbackCities[0];
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
-        <div className="flex gap-3">
-          <button
-            onClick={() => alert("Sync triggered — connect data sources to enable.")}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            Sync Data Now
-          </button>
-          <button
-            onClick={() => alert("Export triggered — connect data sources to enable.")}
-            className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg border border-gray-700 transition-colors"
-          >
-            Export Fan List
-          </button>
-        </div>
-      </div>
-
       {/* Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         <MetricCard
           label="Total Fans"
-          value={totalFanCount.toLocaleString()}
-          change={`+${fanGrowth} (${fanGrowthPct}%) this week`}
-          changeType="positive"
+          value={fanCount.toLocaleString()}
+          change={realFanCount !== null ? "Live from database" : "Fallback data"}
+          changeType={realFanCount !== null ? "positive" : "neutral"}
+        />
+        <MetricCard
+          label="Video Views"
+          value={totalYouTubeViews.toLocaleString()}
+          change={`${YOUTUBE_CHANNEL.totalVideos} videos`}
+          changeType="neutral"
         />
         <MetricCard
           label="Total Streams"
-          value={totalStreams.toLocaleString()}
-          change="+12.3% this month"
+          value={totalSpotifyStreams.toLocaleString()}
+          change={`${spotifyProfile.monthlyListeners} monthly listeners`}
+          changeType="neutral"
+        />
+        <MetricCard
+          label="Engagement"
+          value="4.2%"
+          change="+0.3% this month"
           changeType="positive"
         />
         <MetricCard
@@ -63,63 +83,82 @@ export default function OverviewPage() {
           changeType="neutral"
         />
         <MetricCard
-          label="Engagement Rate"
-          value={avgEngagement}
-          change="+0.8% from last week"
+          label="Monthly Growth"
+          value="+8.4%"
+          change="Cross-platform"
           changeType="positive"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Cities */}
-        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-          <h2 className="text-lg font-semibold mb-4">Top 3 Cities by Fan Count</h2>
-          <CityBarChart data={top3Cities} dataKey="fanCount" height={200} />
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* City Distribution */}
+        <div className="bg-[#0A0A0A] border border-white/5 p-6">
+          <h2 className="headline text-lg text-white mb-6">Fan Distribution by City</h2>
+          <CityBarChart
+            data={fallbackCities.slice(0, 8)}
+            dataKey="fanCount"
+            height={320}
+          />
         </div>
 
-        {/* Spotify Streams */}
-        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-          <h2 className="text-lg font-semibold mb-4">Spotify Streaming Numbers</h2>
-          <div className="space-y-3">
-            {songStreamData.map((song) => (
-              <div key={song.title} className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">{song.title}</span>
-                <span className="text-white font-medium text-sm">{song.streams.toLocaleString()} streams</span>
-              </div>
-            ))}
-          </div>
+        {/* Platform Comparison */}
+        <div className="bg-[#0A0A0A] border border-white/5 p-6">
+          <h2 className="headline text-lg text-white mb-2">Platform Comparison</h2>
+          <p className="font-body text-xs text-white/30 mb-6">
+            {totalCrossplatform.toLocaleString()} total across all platforms
+          </p>
+          <PlatformComparisonChart data={platformComparison} />
         </div>
       </div>
 
+      {/* Engagement Timeline */}
+      <div className="bg-[#0A0A0A] border border-white/5 p-6">
+        <h2 className="headline text-lg text-white mb-2">Engagement Over Time</h2>
+        <p className="font-body text-xs text-white/30 mb-6">Last 90 days — streams &amp; views</p>
+        <StreamsLineChart data={timeline} />
+      </div>
+
       {/* Recent Fan Sign-ups */}
-      <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-        <h2 className="text-lg font-semibold mb-4">Recent Fan Sign-ups</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-left py-3 px-2 text-gray-400 font-medium">Email</th>
-                <th className="text-left py-3 px-2 text-gray-400 font-medium">City</th>
-                <th className="text-left py-3 px-2 text-gray-400 font-medium">Source</th>
-                <th className="text-left py-3 px-2 text-gray-400 font-medium">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentFans.map((fan) => (
-                <tr key={fan.id} className="border-b border-gray-800/50 hover:bg-gray-800/30">
-                  <td className="py-2.5 px-2 text-gray-300">{fan.email}</td>
-                  <td className="py-2.5 px-2 text-gray-300">{fan.city}</td>
-                  <td className="py-2.5 px-2">
-                    <span className="px-2 py-0.5 bg-gray-800 rounded text-xs text-gray-400">{fan.source}</span>
-                  </td>
-                  <td className="py-2.5 px-2 text-gray-500">
-                    {new Date(fan.capturedAt).toLocaleDateString()}
-                  </td>
+      <div className="bg-[#0A0A0A] border border-white/5 p-6">
+        <h2 className="headline text-lg text-white mb-6">Recent Fan Sign-ups</h2>
+        {recentFans.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full font-body text-sm">
+              <thead>
+                <tr className="border-b border-white/5">
+                  <th className="text-left py-3 px-3 text-white/30 font-normal text-xs tracking-[0.15em] uppercase">Email</th>
+                  <th className="text-left py-3 px-3 text-white/30 font-normal text-xs tracking-[0.15em] uppercase">City</th>
+                  <th className="text-left py-3 px-3 text-white/30 font-normal text-xs tracking-[0.15em] uppercase">Source</th>
+                  <th className="text-left py-3 px-3 text-white/30 font-normal text-xs tracking-[0.15em] uppercase">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {recentFans.map((fan) => (
+                  <tr key={fan.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                    <td className="py-3 px-3 text-white/60">{fan.email}</td>
+                    <td className="py-3 px-3 text-white/60">{fan.city || "Unknown"}</td>
+                    <td className="py-3 px-3">
+                      <span className="px-2 py-0.5 bg-white/5 text-white/40 text-xs">{fan.source || "website"}</span>
+                    </td>
+                    <td className="py-3 px-3 text-white/30">
+                      {new Date(fan.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="py-12 text-center border border-dashed border-white/10">
+            <p className="font-body text-sm text-white/30">
+              Fan sign-ups will appear here as visitors subscribe through the site.
+            </p>
+            <p className="font-body text-xs text-white/15 mt-2">
+              Data sourced from /api/fan-capture
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

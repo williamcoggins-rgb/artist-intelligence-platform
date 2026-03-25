@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CityFanData } from "@/lib/dashboard/mock-data";
+import { CityFanData } from "@/lib/dashboard/artist-data";
 
 interface FanMapProps {
   cities: CityFanData[];
@@ -23,8 +23,8 @@ export default function FanMapDashboard({ cities }: FanMapProps) {
 
   if (!mounted) {
     return (
-      <div className="w-full h-[calc(100vh-12rem)] bg-gray-900 rounded-xl border border-gray-800 flex items-center justify-center">
-        <p className="text-gray-500">Loading map...</p>
+      <div className="w-full h-[calc(100vh-16rem)] bg-[#0A0A0A] border border-white/5 flex items-center justify-center">
+        <p className="font-body text-sm text-white/20">Loading map...</p>
       </div>
     );
   }
@@ -35,24 +35,24 @@ export default function FanMapDashboard({ cities }: FanMapProps) {
         {(
           [
             { key: "all", label: "All Fans" },
-            { key: "recent", label: "Recent Fans (30 days)" },
+            { key: "recent", label: "Recent (30 days)" },
             { key: "merch", label: "Merch Buyers" },
           ] as const
         ).map((f) => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 font-body text-xs tracking-[0.15em] uppercase transition-colors ${
               filter === f.key
-                ? "bg-blue-600 text-white"
-                : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white"
+                ? "bg-brand-400 text-black"
+                : "bg-white/5 text-white/30 hover:bg-white/10 hover:text-white/50"
             }`}
           >
             {f.label}
           </button>
         ))}
       </div>
-      <div className="w-full h-[calc(100vh-14rem)] rounded-xl overflow-hidden border border-gray-800">
+      <div className="w-full h-[calc(100vh-18rem)] overflow-hidden border border-white/5">
         {MapComponent && <MapComponent cities={cities} filter={filter} />}
       </div>
     </div>

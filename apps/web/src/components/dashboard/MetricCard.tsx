@@ -3,22 +3,34 @@ interface MetricCardProps {
   value: string;
   change?: string;
   changeType?: "positive" | "negative" | "neutral";
+  icon?: React.ReactNode;
 }
 
-export default function MetricCard({ label, value, change, changeType = "neutral" }: MetricCardProps) {
+export default function MetricCard({
+  label,
+  value,
+  change,
+  changeType = "neutral",
+  icon,
+}: MetricCardProps) {
   const changeColor =
     changeType === "positive"
       ? "text-green-400"
       : changeType === "negative"
       ? "text-red-400"
-      : "text-gray-400";
+      : "text-white/40";
 
   return (
-    <div className="p-6 bg-gray-900 rounded-xl border border-gray-800">
-      <p className="text-sm text-gray-400 mb-1">{label}</p>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className="p-6 bg-[#0A0A0A] border border-white/5 hover:border-white/10 transition-colors">
+      <div className="flex items-start justify-between">
+        <p className="font-body text-xs tracking-[0.2em] uppercase text-white/40">
+          {label}
+        </p>
+        {icon && <span className="text-brand-400/60">{icon}</span>}
+      </div>
+      <p className="headline text-3xl text-white mt-3">{value}</p>
       {change && (
-        <p className={`text-xs mt-2 ${changeColor}`}>{change}</p>
+        <p className={`font-body text-xs mt-2 ${changeColor}`}>{change}</p>
       )}
     </div>
   );

@@ -13,32 +13,53 @@ import {
 interface DataPoint {
   date: string;
   streams: number;
-  listeners: number;
+  views?: number;
+  listeners?: number;
 }
 
 export default function StreamsLineChart({ data }: { data: DataPoint[] }) {
+  const hasViews = data.some((d) => d.views !== undefined);
+  const hasListeners = data.some((d) => d.listeners !== undefined);
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
         <XAxis
           dataKey="date"
-          stroke="#6b7280"
-          fontSize={12}
+          stroke="rgba(255,255,255,0.2)"
+          fontSize={11}
+          fontFamily="Space Grotesk"
           tickFormatter={(v) => {
             const d = new Date(v);
             return `${d.getMonth() + 1}/${d.getDate()}`;
           }}
           interval={13}
         />
-        <YAxis stroke="#6b7280" fontSize={12} tickFormatter={(v) => `${(v / 1000).toFixed(1)}k`} />
+        <YAxis
+          stroke="rgba(255,255,255,0.2)"
+          fontSize={11}
+          fontFamily="Space Grotesk"
+          tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v)}
+        />
         <Tooltip
-          contentStyle={{ backgroundColor: "#1f2937", border: "1px solid #374151", borderRadius: 8 }}
-          labelStyle={{ color: "#9ca3af" }}
+          contentStyle={{
+            backgroundColor: "#0A0A0A",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 0,
+            fontFamily: "Space Grotesk",
+            fontSize: 12,
+          }}
+          labelStyle={{ color: "rgba(255,255,255,0.4)" }}
           formatter={(value) => [Number(value).toLocaleString(), ""]}
         />
-        <Line type="monotone" dataKey="streams" stroke="#3b82f6" strokeWidth={2} dot={false} name="Streams" />
-        <Line type="monotone" dataKey="listeners" stroke="#8b5cf6" strokeWidth={2} dot={false} name="Listeners" />
+        <Line type="monotone" dataKey="streams" stroke="#FFE600" strokeWidth={2} dot={false} name="Streams" />
+        {hasViews && (
+          <Line type="monotone" dataKey="views" stroke="#FF0000" strokeWidth={1.5} dot={false} name="Views" />
+        )}
+        {hasListeners && (
+          <Line type="monotone" dataKey="listeners" stroke="rgba(255,255,255,0.3)" strokeWidth={1.5} dot={false} name="Listeners" />
+        )}
       </LineChart>
     </ResponsiveContainer>
   );

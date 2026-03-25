@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Artist Intelligence Dashboard",
-  description: "Private intelligence dashboard for artist management",
+  title: "QUE Intelligence Hub",
+  description: "Artist intelligence dashboard — Mosart Records",
 };
 
 export default function DashboardRootLayout({
@@ -11,7 +11,7 @@ export default function DashboardRootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-gray-950 text-white antialiased min-h-screen">
+    <div className="bg-black text-white antialiased min-h-screen">
       {children}
     </div>
   );

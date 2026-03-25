@@ -30,15 +30,34 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white">Intelligence Hub</h1>
-          <p className="text-gray-500 mt-2 text-sm">Artist & Manager Access Only</p>
+    <div className="min-h-screen bg-black flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background gradient treatment */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-400/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-400/20 to-transparent" />
+      </div>
+
+      {/* Noise texture */}
+      <div className="absolute inset-0 z-0 noise-bg pointer-events-none" />
+
+      <div className="w-full max-w-sm relative z-10">
+        {/* QUE Wordmark */}
+        <div className="text-center mb-12">
+          <h1 className="headline text-hero text-brand-400 leading-none">
+            QUE
+          </h1>
+          <p className="font-body text-[10px] tracking-[0.4em] uppercase text-white/30 mt-4">
+            Intelligence Hub
+          </p>
         </div>
-        <form onSubmit={handleSubmit} className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-4">
+
+        {/* Login form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="password" className="block text-sm text-gray-400 mb-2">
+            <label
+              htmlFor="password"
+              className="block font-body text-xs tracking-[0.2em] uppercase text-white/40 mb-3"
+            >
               Password
             </label>
             <input
@@ -46,20 +65,28 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-6 py-4 bg-transparent border border-white/10 text-white placeholder-white/20 focus:outline-none focus:border-brand-400 font-body text-sm tracking-[0.1em] transition-colors"
               placeholder="Enter dashboard password"
               autoFocus
             />
           </div>
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+
+          {error && (
+            <p className="font-body text-sm text-red-400">{error}</p>
+          )}
+
           <button
             type="submit"
             disabled={loading || !password}
-            className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 text-white font-medium rounded-lg transition-colors"
+            className="w-full py-4 bg-brand-400 text-black font-body text-sm tracking-[0.2em] uppercase font-semibold hover:bg-white disabled:bg-white/10 disabled:text-white/20 transition-colors"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <p className="font-body text-[10px] tracking-[0.2em] uppercase text-white/15 text-center mt-12">
+          Artist &amp; Manager Access Only
+        </p>
       </div>
     </div>
   );

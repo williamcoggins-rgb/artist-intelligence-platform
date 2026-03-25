@@ -2,7 +2,7 @@
 
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { CityFanData } from "@/lib/dashboard/mock-data";
+import { CityFanData } from "@/lib/dashboard/artist-data";
 
 type FilterMode = "all" | "recent" | "merch";
 
@@ -29,16 +29,17 @@ function getRadius(count: number, maxCount: number): number {
 function getColor(engagement: string): string {
   switch (engagement) {
     case "High":
-      return "#22c55e";
+      return "#FFE600";
     case "Medium":
-      return "#3b82f6";
+      return "#FFE600";
     default:
-      return "#6b7280";
+      return "rgba(255,255,255,0.3)";
   }
 }
 
-function getOpacity(count: number, maxCount: number): number {
-  return Math.max(0.3, (count / maxCount) * 0.8);
+function getOpacity(count: number, maxCount: number, engagement: string): number {
+  const base = Math.max(0.3, (count / maxCount) * 0.8);
+  return engagement === "High" ? base : base * 0.6;
 }
 
 export default function FanMapLeaflet({ cities, filter }: Props) {
@@ -49,7 +50,7 @@ export default function FanMapLeaflet({ cities, filter }: Props) {
       center={[37.0, -95.7]}
       zoom={4}
       style={{ width: "100%", height: "100%" }}
-      className="bg-gray-950"
+      className="bg-black"
     >
       <TileLayer
         attribution='&copy; <a href="https://carto.com/">CARTO</a>'
@@ -66,8 +67,8 @@ export default function FanMapLeaflet({ cities, filter }: Props) {
             pathOptions={{
               color: getColor(city.engagement),
               fillColor: getColor(city.engagement),
-              fillOpacity: getOpacity(count, maxCount),
-              weight: 2,
+              fillOpacity: getOpacity(count, maxCount, city.engagement),
+              weight: 1,
             }}
           >
             <Popup>
@@ -84,17 +85,7 @@ export default function FanMapLeaflet({ cities, filter }: Props) {
                   </p>
                   <p>
                     <span className="text-gray-500">Engagement:</span>{" "}
-                    <span
-                      className={`font-semibold ${
-                        city.engagement === "High"
-                          ? "text-green-600"
-                          : city.engagement === "Medium"
-                          ? "text-blue-600"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      {city.engagement}
-                    </span>
+                    <span className="font-semibold">{city.engagement}</span>
                   </p>
                 </div>
               </div>
