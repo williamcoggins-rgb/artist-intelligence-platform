@@ -7,7 +7,6 @@ const pageTitles: Record<string, string> = {
   "/": "Overview",
   "/streaming": "Streaming Analytics",
   "/social": "Social Performance",
-  "/fan-map": "Fan Map",
   "/content": "Content",
   "/settings": "Settings",
 };

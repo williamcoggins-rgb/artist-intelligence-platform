@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MetricCard from "@/components/dashboard/MetricCard";
 import CityBarChart from "@/components/dashboard/charts/CityBarChart";
 import StreamsLineChart from "@/components/dashboard/charts/StreamsLineChart";
@@ -26,26 +26,9 @@ interface FanRecord {
 }
 
 export default function OverviewPage() {
-  const [realFanCount, setRealFanCount] = useState<number | null>(null);
-  const [recentFans, setRecentFans] = useState<FanRecord[]>([]);
+  const [recentFans] = useState<FanRecord[]>([]);
 
-  // Fetch real fan data from the database
-  useEffect(() => {
-    fetch("/api/fan-map")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.cities && data.cities.length > 0) {
-          const total = data.cities.reduce(
-            (sum: number, c: { fanCount: number }) => sum + c.fanCount,
-            0
-          );
-          setRealFanCount(total);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  const fanCount = realFanCount ?? totalFallbackFans;
+  const fanCount = totalFallbackFans;
   const topCity = fallbackCities[0];
 
   return (
@@ -55,8 +38,8 @@ export default function OverviewPage() {
         <MetricCard
           label="Total Fans"
           value={fanCount.toLocaleString()}
-          change={realFanCount !== null ? "Live from database" : "Fallback data"}
-          changeType={realFanCount !== null ? "positive" : "neutral"}
+          change="Across all cities"
+          changeType="neutral"
         />
         <MetricCard
           label="Video Views"

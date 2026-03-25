@@ -30,22 +30,6 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* Override Leaflet for dark theme */
-.leaflet-popup-content-wrapper {
-  border-radius: 0 !important;
-  background: #000 !important;
-  color: #fff !important;
-  border: 1px solid #FFE600 !important;
-}
-
-.leaflet-popup-tip {
-  background: #000 !important;
-}
-
-.leaflet-container {
-  background: #0A0A0A;
-}
-
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;
